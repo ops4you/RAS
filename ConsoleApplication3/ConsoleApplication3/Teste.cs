@@ -96,7 +96,7 @@ namespace ConsoleApplication3
                     switch (escolha1)
                     {
                         case 1:
-                                //todo LISTAR DESPORTOS
+                            //todo LISTAR DESPORTOS
                             break; 
                         case 2:
                             //todo LISTAR APOSTAS ABERTAS
@@ -117,8 +117,7 @@ namespace ConsoleApplication3
                             break; 
                         case 7:
                             //todo apagar conta
-                            break; 
-                            
+                            break;
                     }
                     break;
              }
