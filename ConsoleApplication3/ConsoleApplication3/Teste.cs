@@ -102,9 +102,23 @@ namespace ConsoleApplication3
                             break; 
                         case 2:
                             //todo LISTAR APOSTAS ABERTAS
+                            //foreach(aposta n)
+                            //jogo nr: 
+                            //equipa1 1 : (odds)
+                            //equipa2 2 : (odds)
+                            //empate x : (odds)
                             break; 
                         case 3:
                             //todo LISTAR HISTÓRICO DE APOSTAS
+                            //foreach(aposta n)
+                            //jogo nr: 
+                            //equipa1 1
+                            //equipa2 2
+                            //empate x
+                            //Aposta:
+                            //Valor apostado:
+                            //Odd:
+                            //-> (ganhos ou LOST)
                             break; 
                         case 4: //DEPOSIT
                             Console.WriteLine("Quantidade a depositar:");
