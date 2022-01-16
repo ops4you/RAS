@@ -73,12 +73,14 @@ namespace ConsoleApplication3
                     Console.WriteLine("Bem-Vindo "+nome);
                     Console.WriteLine("Aposte com consciência.");
                     
+                    ///////////////////////////////////////////////////////////////////////////////////////////////
+                    
                     Console.WriteLine("\n \n");
                     //Menu principal after Log IN
                     Console.WriteLine("\nRASBet ---- BEM VINDO ---- RASBet\n" +
                                       ("- \n") +
                                       ("Bem-Vindo" + nome + "\n") +
-                                      ("Saldo: " + saldo + "€ \n") +
+                                      ("Saldo: " + saldo + "€ \n") + //colocar para diferentes moedas no prt
                                       ("- \n") +
                                       "-----------------------------------\n" +
                                       "| MENU                            |\n" +
@@ -106,14 +108,14 @@ namespace ConsoleApplication3
                             break; 
                         case 4: //DEPOSIT
                             Console.WriteLine("Quantidade a depositar:");
-                            int deposit=Console.Read();
+                            int deposit=Console.Read(); //usar metodo add saldo
                             break; 
                         case 5:
                             Console.WriteLine("Quantidade a levantar:");
-                            int levantar=Console.Read();
+                            int levantar=Console.Read(); //usar metodo remove saldo ou add saldo com saldo negativo
                             break; 
                         case 6:
-                            //todo Log out
+                            //todo Log out 
                             break; 
                         case 7:
                             //todo apagar conta
