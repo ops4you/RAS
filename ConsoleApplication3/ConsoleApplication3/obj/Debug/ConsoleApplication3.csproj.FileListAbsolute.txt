@@ -1,0 +1,8 @@
+/Users/hugo/RiderProjects/ConsoleApplication3/ConsoleApplication3/obj/Debug/ConsoleApplication3.csprojAssemblyReference.cache
+/Users/hugo/RiderProjects/ConsoleApplication3/ConsoleApplication3/obj/Debug/ConsoleApplication3.csproj.CoreCompileInputs.cache
+/Users/hugo/Documentos/RiderProjects/ConsoleApplication3/ConsoleApplication3/obj/Debug/ConsoleApplication3.csproj.AssemblyReference.cache
+/Users/hugo/Documentos/RiderProjects/ConsoleApplication3/ConsoleApplication3/obj/Debug/ConsoleApplication3.csproj.CoreCompileInputs.cache
+/Users/hugo/Documentos/RiderProjects/ConsoleApplication3/ConsoleApplication3/bin/Debug/ConsoleApplication3.exe
+/Users/hugo/Documentos/RiderProjects/ConsoleApplication3/ConsoleApplication3/bin/Debug/ConsoleApplication3.pdb
+/Users/hugo/Documentos/RiderProjects/ConsoleApplication3/ConsoleApplication3/obj/Debug/ConsoleApplication3.exe
+/Users/hugo/Documentos/RiderProjects/ConsoleApplication3/ConsoleApplication3/obj/Debug/ConsoleApplication3.pdb
