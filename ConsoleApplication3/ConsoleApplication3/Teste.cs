@@ -291,7 +291,7 @@ namespace ConsoleApplication3
                                      case 7: //DELETE
                                          string del = PostGet.Getread("user/delete/" + username);
                                          break;
-                                     case 8: //TRADE
+                                     case 8: ///TRADE
                                          Console.WriteLine("Trocar: \n");
                                          Console.WriteLine("1- Euro \n" +
                                                            ("2- USD \n") +
