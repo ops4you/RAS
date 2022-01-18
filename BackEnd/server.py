@@ -83,17 +83,17 @@ def deleteuser(username):
 
 
 @app.route('/user/bethistory/<user>')
-def checkbets(username):
+def checkbethistory(username):
     return userController.checkBets(userController.idfromname(username))
 
 
 @app.route('/user/deposit')
-def checkbets():
+def deposit():
     return userController.addcredito(request.json['moeda'], request.json['valor'], request.json['userid'])
 
 
 @app.route('/user/trade')
-def checkbets():
+def trade():
     return userController.exchangemoeda(request.json['moeda1_id'], request.json['moeda2_id'], request.json['valor'],
                                         request.json['userid'])
 
