@@ -32,15 +32,12 @@ def register():
 
     available = userController.checkuserexists(username)
     if (available == "0"):
-        name = request.json('nome')
+        name = request.json['nome']
         password = request.json['password']
-        isAdmin = request.json['isAdmin']
+        isAdmin = request.json['admin']
         email = request.json['email']
-        nif = request.json['nome']
+        nif = request.json['nif']
         data = request.json['datanasc'][:10]
-        key = "RAS2022"
-        if isAdmin == "1" and not (request.json['key'] == key):
-            return {"error": "Key invalida"}
 
         code = userController.register_user(username, name, password, isAdmin, email, nif, data)
         if (code == 200):
