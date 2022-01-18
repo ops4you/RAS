@@ -1,4 +1,7 @@
 using System;
+using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace ConsoleApplication3
 {
@@ -29,7 +32,13 @@ namespace ConsoleApplication3
                     Console.WriteLine("Password: ");
                     string password = Console.ReadLine();
                     //Console.WriteLine("\n");
-
+                    
+                    var logi = new
+                    {
+                        username = username,
+                        password = password
+                    };
+                    PostGet.Postread("user/login", JObject.Parse(JsonConvert.SerializeObject(logi)));
                     break;
                 case 2:
                     Console.WriteLine("\n RASBet ---- SIGN UP ---- RASBet");
@@ -68,13 +77,96 @@ namespace ConsoleApplication3
                     //Console.WriteLine("\n");
 
                     Console.WriteLine("Data Nascimento (dd/mm/aaaa): ");
-                    string nasc = Console.ReadLine();
-                    Console.WriteLine("... \n");
-                    Console.WriteLine("Bem-Vindo "+nome);
+                    DateTime userDateTime;
+                    
+                    while (!DateTime.TryParse(Console.ReadLine(), out userDateTime) || userDateTime>DateTime.Now)
+                    {
+                        Console.WriteLine("Data errada.");
+                        Console.WriteLine("REPETE");
+                        Console.WriteLine("Data Nascimento (dd/mm/aaaa): ");
+                    }
+                    //Console.WriteLine("Nasceste no dia: " + userDateTime);
+                    // while (userDateTime>(DateTime.Now))
+                    // {
+                    //     Console.WriteLine("Data errada.");
+                    //     Console.WriteLine("REPETE");
+                    //     Console.WriteLine("Data Nascimento (dd/mm/aaaa): ");
+                    // }
+
+                    if (userDateTime.AddYears(18) > DateTime.Now)
+                    {
+                        Console.WriteLine("Não possui idade legal para jogar");
+                        Environment.Exit(0);
+                    }
+                    userDateTime = userDateTime.Date;
+                    
+                    Console.WriteLine("Admin (s/n): ");
+                    int fin = 0;
+                    String admin = Console.ReadLine();
+                    if (admin is "s" or "S")
+                    {
+                        Console.WriteLine("Admin-Key: ");
+                        String key = Console.ReadLine();
+                        var i = 1;
+                        while (key != "RAS2122" & i < 4)
+                        {
+                            Console.WriteLine("\n CHAVE ERRADA (tentativa " + i + "/3)");
+                            Console.WriteLine("Admin-Key: ");
+                            i++;
+                            key = Console.ReadLine();
+                        }
+                        if (key == "RAS2122") fin = 1;
+                        
+                        if (key != "RAS2122")
+                        {
+                            Console.WriteLine("Continuar SignUp sem ser admin? (s/n):");
+                            string choose = Console.ReadLine();
+                            if (choose is "s" or "S")
+                            {
+                                admin = "n";
+                                fin = 0;
+                            }
+                            else break;
+                        }
+                    }
+                    else
+                    {
+                        admin = "n";
+                        fin = 0;
+                    }
+                    //Console.WriteLine("\n");
+
+                    var signup = new
+                    {
+                        nome = nome,
+                        username = newusername,
+                        email = email,
+                        password = newpassword,
+                        nif = nif,
+                        datanasc = userDateTime,
+                        admin = fin
+                    };
+                    string jsonData = JsonConvert.SerializeObject(signup);
+                    JObject jsonObject = JObject.Parse(jsonData);
+                    PostGet.Postread("user/register", jsonObject);
+                    Console.WriteLine(jsonData);
+
+                    //Print the parsed Json object
+                    // Console.WriteLine((string)jsonObject["Nome"]);
+                    // Console.WriteLine((string)jsonObject["Username"]);
+                    // Console.WriteLine((string)jsonObject["Email"]);
+                    // Console.WriteLine((string)jsonObject["Password"]);
+                    // Console.WriteLine((string)jsonObject["Nif"]);
+                    // Console.WriteLine((string)jsonObject["DataNasc"]);
+
+                    Console.WriteLine("\nBem-Vindo "+nome);
                     Console.WriteLine("Aposte com consciência.");
                     
                     ///////////////////////////////////////////////////////////////////////////////////////////////
                     
+                    //get a partir do username
+                    //PostGet.Getread("user/wallet/"+user);             
+
                     Console.WriteLine("\n \n");
                     //Menu principal after Log IN
                     Console.WriteLine("\nRASBet ---- BEM VINDO ---- RASBet\n" +
@@ -92,6 +184,7 @@ namespace ConsoleApplication3
                                       "|5. Levantar                      |\n" +
                                       "|6. Log Out                       |\n" +
                                       "|7. Apagar Conta                  |\n" +
+                                      "|8. Converter moedas              |\n" +
                                       "-----------------------------------");
                     Console.WriteLine("Choose menu item: ");
                     int escolha1 = int.Parse(Console.ReadLine());
@@ -99,6 +192,7 @@ namespace ConsoleApplication3
                     {
                         case 1:
                             //todo LISTAR DESPORTOS
+                            PostGet.Getread("user/sports");             
                             break; 
                         case 2:
                             //todo LISTAR APOSTAS ABERTAS
@@ -107,6 +201,7 @@ namespace ConsoleApplication3
                             //equipa1 1 : (odds)
                             //equipa2 2 : (odds)
                             //empate x : (odds)
+                            PostGet.Getread("user/bets");
                             break; 
                         case 3:
                             //todo LISTAR HISTÓRICO DE APOSTAS
@@ -119,6 +214,7 @@ namespace ConsoleApplication3
                             //Valor apostado:
                             //Odd:
                             //-> (ganhos ou LOST)
+                            PostGet.Getread("user/bethistory");
                             break; 
                         case 4: //DEPOSIT
                             Console.WriteLine("Quantidade a depositar:");
@@ -129,10 +225,28 @@ namespace ConsoleApplication3
                             int levantar= int.Parse(Console.ReadLine()); //usar metodo remove saldo ou add saldo com saldo negativo
                             break; 
                         case 6:
-                            //todo Log out 
+                            Console.WriteLine("Esperamos vê-lo em breve!");
+                            Environment.Exit(0);
                             break; 
                         case 7:
                             //todo apagar conta
+                            PostGet.Getread("user/delete");
+                            break;
+                        case 8:
+                            Console.WriteLine("Trocar: \n");
+                            Console.WriteLine ("1- Helium \n" +
+                                              ("2- Bitcoin \n") +
+                                              ("3- Ethereum \n") +
+                                              ("4- USD \n") + 
+                                              ("5- Euro \n") + 
+                                               "6- Libra \n");
+                            Console.WriteLine("Por: \n");
+                            Console.WriteLine  ("1- Helium \n" +
+                                               ("2- Bitcoin \n") +
+                                               ("3- Ethereum \n") +
+                                               ("4- USD \n") + 
+                                               ("5- Euro \n") + 
+                                                "6- Libra \n");
                             break;
                     }
                     break;
