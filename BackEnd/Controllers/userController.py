@@ -49,33 +49,34 @@ def read_query(query):
 
 def idfromname(username):
     queryUser = f'''
-                SELECT user_id FROM user WHERE username = "{username}";
+                SELECT user_id FROM mydb.user WHERE username = "{username}";
             '''
-    return (read_query(queryUser))
+    return read_query(queryUser)
+
 
 # função a usar para registar um user
 def register_user(username, name, password, isadmin, email, nif, dn):
     connection = connect_db()
     query = f'''
-        INSERT INTO user (username, name, password, isAdmin, email, nif, data_nascimento) 
-        VALUES  ('{username}', '{name}', {password}, {isadmin}, {email}, {nif}, {dn});
+        INSERT INTO mydb.user (username, name, password, isAdmin, email, nif, data_nascimento) 
+        VALUES  ('{username}', '{name}', '{password}', {isadmin}, '{email}', '{nif}', '{dn}');
     '''
     execute_query(connection, query)
+
     queryMoeda = f'''
-        SELECT moeda_id FROM moeda;
+        SELECT moeda_id FROM mydb.moeda;
     '''
 
     user_id = idfromname(username)
 
     for x in read_query(queryMoeda):
         query = f'''
-            INSERT INTO userMoeda (user_id, moeda_id, quantidade)
-            VALUES ('{user_id}', '{x}', '0');
+            INSERT INTO mydb.userMoeda (user_id, moeda_id, quantidade)
+            VALUES ({user_id}, {x}, 0);
         '''
-        #se der erro aqui tentar com x[0] e depois x[0][0]
+        # se der erro aqui tentar com x[0] e depois x[0][0]
 
     execute_query(connection, query)
-
 
     return 200
 
@@ -84,7 +85,7 @@ def register_user(username, name, password, isadmin, email, nif, dn):
 def getusers():
     connection = connect_db()
     query = f'''
-        SELECT * FROM user;
+        SELECT * FROM mydb.user;
     '''
     return read_query(query)
 
@@ -93,7 +94,7 @@ def getusers():
 def getuser(username):
     connection = connect_db()
     query = f'''
-        SELECT * FROM user WHERE user.username = "{username}";
+        SELECT * FROM mydb.user WHERE user.username = "{username}";
     '''
     return read_query(query)
 
@@ -112,7 +113,7 @@ def checkuserexists(username):
 def checkcredentials(name, password):
     connection = connect_db()
     query = f'''
-        SELECT * FROM user WHERE (user.name = "{name}") AND (user.password = "{password}");
+        SELECT * FROM mydb.user WHERE (user.name = "{name}") AND (user.password = "{password}");
     '''
     result = read_query(query)
     if not result: return "0"
@@ -123,7 +124,7 @@ def checkcredentials(name, password):
 # funcao que devolve a wallet do utilizador
 def getwallet(user_id):
     query = f'''
-        SELECT moeda.nome,userMoeda.quantidade FROM userMoeda,modeda INNET JOIN moeda ON moeda.moeda_id=userMoeda.moeda_id WHERE userMoeda.user_id={user_id}
+        SELECT moeda.nome,userMoeda.quantidade FROM mydb.userMoeda INNER JOIN moeda ON moeda.moeda_id=userMoeda.moeda_id WHERE userMoeda.user_id={user_id}
     '''
 
     lista = read_query(query)
@@ -132,11 +133,13 @@ def getwallet(user_id):
         tmp = {x[0]: x[1]}
         result.update(tmp)
 
+    return result
+
 
 # função que verifica se um dado user tem dinheiro para fazer a aposta que pretende
 def checkcredito(moeda_id, valor, user_id):
     query = f'''
-        SELECT quantidade FROM userMoeda WHERE id = {user_id} AND moeda_id = {moeda_id}
+        SELECT quantidade FROM mydb.userMoeda WHERE id = {user_id} AND moeda_id = {moeda_id}
     '''
 
     valorBD = (read_query(query)[0])[0]
@@ -151,13 +154,13 @@ def addcredito(moeda_id, valor, user_id):
     connection = connect_db()
 
     query = f'''
-            SELECT valor FROM userMoeda WHERE user_id = {user_id} AND moeda_id = {moeda_id}
+            SELECT valor FROM mydb.userMoeda WHERE user_id = {user_id} AND moeda_id = {moeda_id}
         '''
 
     valorBD = (read_query(query)[0])[0]
 
     query = f'''
-        UPDATE userMoeda SET valor={valorBD + valor} WHERE user_id={user_id} AND moeda_id={user_id};
+        UPDATE mydb.userMoeda SET valor={valorBD + valor} WHERE user_id={user_id} AND moeda_id={user_id};
     '''
     return "1"
 
@@ -166,7 +169,7 @@ def removecredito(moeda_id, valor, user_id):
     connection = connect_db()
 
     query = f'''
-            ELECT quantidade FROM userMoeda WHERE user_id = {user_id} AND moeda_id = {moeda_id}
+            SELECT quantidade FROM mydb.userMoeda WHERE user_id = {user_id} AND moeda_id = {moeda_id}
         '''
 
     valorBD = (read_query(query)[0])[0]
@@ -175,7 +178,7 @@ def removecredito(moeda_id, valor, user_id):
         return "0"
 
     query = f'''
-        UPDATE userMoeda SET valor={valorBD - valor} WHERE user_id={user_id} AND moeda_id={user_id};
+        UPDATE mydb.userMoeda SET valor={valorBD - valor} WHERE user_id={user_id} AND moeda_id={user_id};
     '''
     return "1"
 
@@ -185,11 +188,11 @@ def exchangemoeda(moeda1_id, moeda2_id, valor, user_id):
         return "0"
 
     query = f'''
-                SELECT rate_to_euro FROM moeda WHERE moeda_id = {moeda1_id}
+                SELECT rate_to_euro FROM mydb.moeda WHERE moeda_id = {moeda1_id}
             '''
 
     query2 = f'''
-                SELECT rate_from_euro FROM moeda WHERE moeda_id = {moeda2_id}
+                SELECT rate_from_euro FROM mydb.moeda WHERE moeda_id = {moeda2_id}
             '''
 
     # se der erro aqui tentar sem [0] e com [0][0]
@@ -201,7 +204,7 @@ def exchangemoeda(moeda1_id, moeda2_id, valor, user_id):
 
 def deleteacount(userid):
     query = f'''
-        DELETE FROM user WHERE user.user_id={userid}
+        DELETE FROM mydb.user WHERE user.user_id={userid}
         '''
 
     execute_query(query)
@@ -213,7 +216,7 @@ def checkBets(userid):
     #           WHERE apostaComposta.aposta_id = aposta.id AND apostaComposta.userApostaColetiva_id=userApostaColectiva.apostaColetiva_id AND userApostaColectiva.user_id={userid}
     #       '''
     query = f'''
-            SELECT * FROM aspotaComposta WHERE apostaComposta.userApostaColetiva_id=userApostaColectiva.apostaColetiva_id AND userApostaColectiva.user_id={userid} 
+            SELECT * FROM mydb.aspostaComposta WHERE mydb.apostaComposta.userApostaColetiva_id=mydb.userApostaColectiva.apostaColetiva_id AND mydb.userApostaColectiva.user_id={userid} 
         '''
 
     lista = read_query(query)
@@ -230,7 +233,7 @@ def checkBets(userid):
 
 def checksport(userid):
     query = f'''
-                SELECT aposta.desporto FROM aposta,aspotaComposta,userApostaColetiva 
+                SELECT aposta.desporto FROM mydb.aposta, mydb.aspotaComposta, mydb.userApostaColetiva 
                 WHERE aposta.id =apostaComposta.aposta_id AND apostaComposta.userApostaColetiva_id=userApostaColectiva.apostaColetiva_id AND userApostaColectiva.user_id={userid} 
             '''
 

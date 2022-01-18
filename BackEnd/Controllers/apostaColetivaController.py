@@ -55,8 +55,8 @@ def criarAposta(clube1, clube2, oddsw, oddsd, oddsl, desporto, data_inicio="2022
     connection = connect_db()
 
     query = f'''
-        INSERT INTO aposta (estado, clube1, clube2, oddsw, oddsd, oddsl, desporto, data_inicio, data_fim) 
-        VALUES (-1, '{clube1}', '{clube2}', {oddsw}, {oddsd}, {oddsl}, {desporto}, {data_inicio}, {data_fim});
+        INSERT INTO mydb.aposta (estado, clube1, clube2, oddsw, oddsd, oddsl, desporto, data_inicio, data_fim) 
+        VALUES (-1, '{clube1}', '{clube2}', {oddsw}, {oddsd}, {oddsl}, '{desporto}', '{data_inicio}', '{data_fim}');
     '''
 
     return execute_query(connection, query)
@@ -65,7 +65,7 @@ def criarAposta(clube1, clube2, oddsw, oddsd, oddsl, desporto, data_inicio="2022
 # função que devolve todas as aposta abertas (estado = 1)
 def getApostas():
     query = f'''
-        SELECT * FROM apostaColetiva WHERE estado = -1;
+        SELECT * FROM mydb.apostaColetiva WHERE estado = -1;
     '''
 
     lista = read_query(query)
@@ -95,7 +95,7 @@ def fazerAposta(user_id, aposta_id, resultado, moeda_id, valor):
         return 400
 
     query = f'''
-            INSERT INTO userApostaColectiva (user_id, moeda_id, valor)
+            INSERT INTO mydb.userApostaColectiva (user_id, moeda_id, valor)
             VALUES ({user_id}, {moeda_id},{valor})
         '''
     execute_query(connection, query)
@@ -107,7 +107,7 @@ def fazerAposta(user_id, aposta_id, resultado, moeda_id, valor):
     apcid = read_query(query2)[0]
 
     query3 = f'''
-              INSERT INTO apostaComposta (resultado, userApostaColectiva, aposta_id)
+              INSERT INTO mydb.apostaComposta (resultado, userApostaColectiva, aposta_id)
               VALUES ({resultado}, {apcid},{aposta_id})
           '''
     return execute_query(connection, query3)
@@ -117,13 +117,13 @@ def closeAposta(aposta_id, result):
     connection = connect_db()
 
     query = f'''
-            UPDATE aposta SET resultado={result} WHERE id={aposta_id};
+            UPDATE mydb.aposta SET resultado={result} WHERE id={aposta_id};
         '''
 
     execute_query(connection, query)
 
     query2 = f'''
-            SELECT userApostaColetiva.* FROM userApostaColetiva,apostaComposta
+            SELECT userApostaColetiva.* FROM mydb.userApostaColetiva,mydb.apostaComposta
             WHERE apostaComposta.aposta_id={aposta_id} AND apostaComposta.userApostaColetiva_id = userApostaColetiva.aspotaColetiva_id
         '''
     result = read_query(query2)
@@ -134,14 +134,14 @@ def closeAposta(aposta_id, result):
 
 def checkapostacoletiva(apostaColetiva_id):
     query = f'''
-            SELECT * FROM apostaComposta WHERE userApostaColetiva_id={apostaColetiva_id};
+            SELECT * FROM mydb.apostaComposta WHERE userApostaColetiva_id={apostaColetiva_id};
         '''
 
     result = read_query(query)
     mult = 1
     for x in result:
         query2 = f'''
-                    SELECT * FROM aposta WHERE id={x[3]};
+                    SELECT * FROM mydb.aposta WHERE id={x[3]};
             '''
 
         result2 = read_query(query2)

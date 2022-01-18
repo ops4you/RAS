@@ -58,16 +58,16 @@ def login():
 
     logIn = userController.checkcredentials(username, password)
 
-    if (logIn == "0"):
+    if logIn == "0":
         return {"error": "Credenciais erradas"}
 
     else:
         return {"sucess": "Log in com sucesso"}
 
 
-@app.route('/user/wallet/<user>', methods=['POST'])
-def getwallet(username):
-    return userController.getwallet(userController.idfromname(username))
+@app.route('/user/wallet/<user>')
+def getwallet(user):
+    return userController.getwallet(userController.idfromname(user))
 
 
 @app.route('/user/bets/<user>')
