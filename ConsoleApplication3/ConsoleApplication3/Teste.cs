@@ -60,7 +60,6 @@ namespace ConsoleApplication3
                         logg = PostGet.Postread("user/login", JObject.Parse(JsonConvert.SerializeObject(logi)));
                         json = JsonConvert.DeserializeObject(logg);
                     }
-
                     break;
                 case 2:
                     Console.WriteLine("\n RASBet ---- SIGN UP ---- RASBet");

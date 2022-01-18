@@ -46,7 +46,7 @@ def register():
             return {"error": "Erro a inserir user. Tente outra vez mais tarde"}
 
     else:
-        return {"error": "Name já utilizado."}
+        return {"error": "Name ja utilizado."}
 
 
 # rota usada para fazer log in de um user
