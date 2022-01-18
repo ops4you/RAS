@@ -87,13 +87,18 @@ def checkbethistory(username):
 
 @app.route('/user/deposit')
 def deposit():
-    return userController.addcredito(request.json['moeda'], request.json['valor'], request.json['userid'])
+    return userController.addcredito(request.json['moeda'], request.json['valor'], userController.idfromname(request.json['nome']))
+
+
+@app.route('/user/withdrawl')
+def withdrawl():
+    return userController.removecredito(request.json['moeda'], request.json['valor'], userController.idfromname(request.json['nome']) )
 
 
 @app.route('/user/trade')
 def trade():
-    return userController.exchangemoeda(request.json['moeda1_id'], request.json['moeda2_id'], request.json['valor'],
-                                        request.json['userid'])
+    return userController.exchangemoeda(request.json['moeda1'], request.json['moeda2'], request.json['valor'],
+                                        userController.idfromname(request.json['nome']))
 
 
 @app.route('/user/sports/<user>')

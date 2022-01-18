@@ -51,7 +51,7 @@ def idfromname(username):
     queryUser = f'''
                 SELECT user_id FROM user WHERE username = "{username}";
             '''
-    return (read_query(queryUser)[0])[0]
+    return (read_query(queryUser))
 
 # função a usar para registar um user
 def register_user(username, name, password, isadmin, email, nif, dn):
@@ -60,22 +60,19 @@ def register_user(username, name, password, isadmin, email, nif, dn):
         INSERT INTO user (username, name, password, isAdmin, email, nif, data_nascimento) 
         VALUES  ('{username}', '{name}', {password}, {isadmin}, {email}, {nif}, {dn});
     '''
-    execute_query(connection,query)
+    execute_query(connection, query)
     queryMoeda = f'''
         SELECT moeda_id FROM moeda;
     '''
 
-    queryUser = f'''
-                SELECT user_id FROM user WHERE username = "{username}";
-            '''
-
-    user_id = (read_query(queryUser)[0][0])
+    user_id = idfromname(username)
 
     for x in read_query(queryMoeda):
         query = f'''
             INSERT INTO userMoeda (user_id, moeda_id, quantidade)
-            VALUES ('{user_id}', '{x[0]}', '0');
+            VALUES ('{user_id}', '{x}', '0');
         '''
+        #se der erro aqui tentar com x[0] e depois x[0][0]
 
     execute_query(connection, query)
 
@@ -183,15 +180,6 @@ def removecredito(moeda_id, valor, user_id):
     return "1"
 
 
-def exchangetoeuro(moeda, valor, user_id):
-    if not removecredito(moeda, valor, user_id):
-        return "0"
-
-    query = f'''
-                SELECT rate_to_euro FROM moeda WHERE moeda_id = {moeda}
-        '''
-
-
 def exchangemoeda(moeda1_id, moeda2_id, valor, user_id):
     if not removecredito(moeda1_id, valor, user_id):
         return "0"
@@ -204,8 +192,9 @@ def exchangemoeda(moeda1_id, moeda2_id, valor, user_id):
                 SELECT rate_from_euro FROM moeda WHERE moeda_id = {moeda2_id}
             '''
 
-    mult = read_query(query)[0][0]
-    mult = mult * read_query(query2)[0][0]
+    # se der erro aqui tentar sem [0] e com [0][0]
+    mult = read_query(query)[0]
+    mult = mult * read_query(query2)[0]
 
     return addcredito(moeda2_id, valor * mult, user_id)
 
