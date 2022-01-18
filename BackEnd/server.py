@@ -68,23 +68,23 @@ def login():
 
 
 @app.route('/user/wallet/<user>', method=['POST'])
-def getwallet(user_id):
-    return userController.getwallet(user_id)
+def getwallet(username):
+    return userController.getwallet(userController.idfromname(username))
 
 
 @app.route('/user/bets/<user>')
-def checkbets(user_id):
+def checkbets(username):
     userController.checkBets()
 
 
-@app.route('/user/delete/<user_id>')
-def deleteuser(user_id):
-    userController.deleteacount(user_id)
+@app.route('/user/delete/<user>')
+def deleteuser(username):
+    userController.deleteacount(userController.idfromname(username))
 
 
-@app.route('/user/bethistory/<user_id>')
-def checkbets(user_id):
-    return userController.checkBets(user_id)
+@app.route('/user/bethistory/<user>')
+def checkbets(username):
+    return userController.checkBets(userController.idfromname(username))
 
 
 @app.route('/user/deposit')
@@ -98,9 +98,9 @@ def checkbets():
                                         request.json['userid'])
 
 
-@app.route('/user/sports/<user_id>')
-def checksports(user_id):
-    return userController.checksport(user_id)
+@app.route('/user/sports/<user>')
+def checksports(username):
+    return userController.checksport(userController.idfromname(username))
 
 
 if __name__ == '__main__':

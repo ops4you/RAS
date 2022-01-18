@@ -47,6 +47,12 @@ def read_query(query):
         return 400
 
 
+def idfromname(username):
+    queryUser = f'''
+                SELECT user_id FROM user WHERE username = "{username}";
+            '''
+    return (read_query(queryUser)[0])[0]
+
 # função a usar para registar um user
 def register_user(username, name, password, isadmin, email, nif, dn):
     connection = connect_db()
@@ -63,11 +69,13 @@ def register_user(username, name, password, isadmin, email, nif, dn):
             '''
     user_id = (read_query(queryUser)[0])[0]
 
-    for x in queryMoeda:
-        queryMoeda = f'''
+    for x in read_query(queryMoeda):
+        query = f'''
             INSERT INTO userMoeda (user_id, moeda_id, quantidade)
             VALUES ('{user_id}', '{x[0][0]}', '0');
         '''
+        execute_query(query)
+
     return execute_query(connection, query)
 
 
