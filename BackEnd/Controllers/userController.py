@@ -76,7 +76,9 @@ def register_user(username, name, password, isadmin, email, nif, dn):
             INSERT INTO userMoeda (user_id, moeda_id, quantidade)
             VALUES ('{user_id}', '{x[0]}', '0');
         '''
-        execute_query(connection,query)
+
+    execute_query(connection, query)
+
 
     return 200
 
