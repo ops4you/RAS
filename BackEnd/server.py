@@ -37,7 +37,7 @@ def register():
         isAdmin = request.json['admin']
         email = request.json['email']
         nif = request.json['nif']
-        data = request.json['datanasc'][:10]
+        data = (request.json['datanasc'])[:10]
 
         code = userController.register_user(username, name, password, isAdmin, email, nif, data)
         if (code == 200):

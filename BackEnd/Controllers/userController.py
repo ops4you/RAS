@@ -74,7 +74,7 @@ def register_user(username, name, password, isadmin, email, nif, dn):
     for x in read_query(queryMoeda):
         query = f'''
             INSERT INTO userMoeda (user_id, moeda_id, quantidade)
-            VALUES ('{user_id}', '{x[0][0]}', '0');
+            VALUES ('{user_id}', '{x[0]}', '0');
         '''
         execute_query(query)
 
