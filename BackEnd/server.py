@@ -76,8 +76,8 @@ def checkbets(username):
 
 
 @app.route('/user/delete/<user>')
-def deleteuser(username):
-    userController.deleteacount(userController.idfromname(username))
+def deleteuser(user):
+    return userController.deleteacount(userController.idfromname(user))
 
 
 @app.route('/user/bethistory/<user>')
@@ -85,17 +85,17 @@ def checkbethistory(username):
     return userController.checkBets(userController.idfromname(username))
 
 
-@app.route('/user/deposit')
+@app.route('/user/deposit', methods=['POST'])
 def deposit():
     return userController.addcredito(request.json['moeda'], request.json['valor'], userController.idfromname(request.json['nome']))
 
 
-@app.route('/user/withdrawl')
+@app.route('/user/withdrawl', methods=['POST'])
 def withdrawl():
     return userController.removecredito(request.json['moeda'], request.json['valor'], userController.idfromname(request.json['nome']) )
 
 
-@app.route('/user/trade')
+@app.route('/user/trade', methods=['POST'])
 def trade():
     return userController.exchangemoeda(request.json['moeda1'], request.json['moeda2'], request.json['valor'],
                                         userController.idfromname(request.json['nome']))

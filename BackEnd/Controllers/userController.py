@@ -51,7 +51,7 @@ def idfromname(username):
     queryUser = f'''
                 SELECT user_id FROM mydb.user WHERE username = "{username}";
             '''
-    return read_query(queryUser)
+    return read_query(queryUser)[0][0]
 
 
 # função a usar para registar um user
@@ -72,11 +72,11 @@ def register_user(username, name, password, isadmin, email, nif, dn):
     for x in read_query(queryMoeda):
         query = f'''
             INSERT INTO userMoeda (user_id, moeda_id, quantidade)
-            VALUES ({user_id}, {x}, 0);
+            VALUES ({user_id}, {x[0]}, 0);
         '''
         # se der erro aqui tentar com x[0] e depois x[0][0]
-
-    execute_query(connection, query)
+        print (x)
+        execute_query(connection, query)
 
     return 200
 
@@ -124,13 +124,13 @@ def checkcredentials(name, password):
 # funcao que devolve a wallet do utilizador
 def getwallet(user_id):
     query = f'''
-        SELECT moeda.nome,userMoeda.quantidade FROM mydb.userMoeda INNER JOIN moeda ON moeda.moeda_id=userMoeda.moeda_id WHERE userMoeda.user_id={user_id}
-
+SELECT moeda.nome,userMoeda.quantidade FROM mydb.userMoeda INNER JOIN mydb.moeda ON moeda.moeda_id=userMoeda.moeda_id WHERE userMoeda.user_id={user_id};
     '''
 
     lista = read_query(query)
     result = {}
     print (lista)
+    print(user_id)
     for x in lista:
         tmp = {x[0]: x[1]}
         result.update(tmp)
@@ -156,15 +156,16 @@ def addcredito(moeda_id, valor, user_id):
     connection = connect_db()
 
     query = f'''
-            SELECT valor FROM mydb.userMoeda WHERE user_id = {user_id} AND moeda_id = {moeda_id}
+            SELECT quantidade FROM mydb.userMoeda WHERE user_id = {user_id} AND moeda_id = {moeda_id}
         '''
-
-    valorBD = (read_query(query)[0])[0]
+    print (read_query(query))
+    valorBD = (read_query(query))
 
     query = f'''
-        UPDATE mydb.userMoeda SET valor={valorBD + valor} WHERE user_id={user_id} AND moeda_id={user_id};
+        UPDATE mydb.userMoeda SET quantidade={valorBD[0][0] + valor} WHERE user_id={user_id} AND moeda_id={moeda_id};
     '''
-    return "1"
+    #print (valorBD[0][0]+valor)
+    return str(execute_query(connection, query))
 
 
 def removecredito(moeda_id, valor, user_id):
@@ -174,15 +175,16 @@ def removecredito(moeda_id, valor, user_id):
             SELECT quantidade FROM mydb.userMoeda WHERE user_id = {user_id} AND moeda_id = {moeda_id}
         '''
 
-    valorBD = (read_query(query)[0])[0]
+    valorBD = (read_query(query))
 
-    if valorBD < valor:
+    print (valorBD)
+    if int(valorBD[0][0]) < int(valor):
         return "0"
 
     query = f'''
-        UPDATE mydb.userMoeda SET valor={valorBD - valor} WHERE user_id={user_id} AND moeda_id={user_id};
+        UPDATE mydb.userMoeda SET quantidade = quantidade - {valor} WHERE user_id={user_id} AND moeda_id={moeda_id};
     '''
-    return "1"
+    return str(execute_query(connection, query))
 
 
 def exchangemoeda(moeda1_id, moeda2_id, valor, user_id):
@@ -205,11 +207,11 @@ def exchangemoeda(moeda1_id, moeda2_id, valor, user_id):
 
 
 def deleteacount(userid):
+    connection = connect_db()
     query = f'''
         DELETE FROM mydb.user WHERE user.user_id={userid}
         '''
-
-    execute_query(query)
+    return str(execute_query(connection, query))
 
 
 def checkBets(userid):

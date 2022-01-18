@@ -10,24 +10,25 @@ namespace ConsoleApplication3
         {
             bool p = true;
             //get a partir do username
-            string ar = PostGet.Getread("user/wallet/" + username);
-            dynamic json11 = JsonConvert.DeserializeObject(ar);
-            double saldoE = Double.Parse((string)json11["euro"]);
-            double saldoU = Double.Parse((string)json11["usd"]);
-            double saldoL = Double.Parse((string)json11["gbp"]);
-            double saldoA = Double.Parse((string)json11["ada"]);
-            
+
+
             while (p)
             {
+                string ar = PostGet.Getread("user/wallet/" + username);
+                dynamic json11 = JsonConvert.DeserializeObject(ar);
+                double saldoE = Double.Parse((string) json11["euro"]);
+                double saldoU = Double.Parse((string) json11["usd"]);
+                double saldoL = Double.Parse((string) json11["gbp"]);
+                double saldoA = Double.Parse((string) json11["ada"]);
                 Console.WriteLine("\n \n");
                 //Menu principal after Log IN
                 Console.WriteLine("\nRASBet ---- BEM VINDO ---- RASBet\n" +
                                   ("- \n") +
                                   ("Bem-Vindo " + username + "\n") +
-                                  ("Eur: " + saldoE + "€ \n") + 
-                                  ("USD: " + saldoU + "$ \n") + 
-                                  ("GBP: " + saldoL + "£ \n") + 
-                                  ("ADA: " + saldoA + "ADA \n") + 
+                                  ("Eur: " + saldoE + "€ \n") +
+                                  ("USD: " + saldoU + "$ \n") +
+                                  ("GBP: " + saldoL + "£ \n") +
+                                  ("ADA: " + saldoA + "ADA \n") +
                                   ("- \n") +
                                   "-----------------------------------\n" +
                                   "| MENU                            |\n" +
@@ -81,7 +82,7 @@ namespace ConsoleApplication3
                                           ("3- Libras \n") +
                                           ("4- Cardano \n"));
                         int moedal = int.Parse(Console.ReadLine());
-                        int moeda = moedal - 1;
+                        int moeda = moedal +5;
                         Console.WriteLine("Quantidade a depositar:");
                         int deposit = int.Parse(Console.ReadLine());
                         var depos = new
@@ -90,7 +91,8 @@ namespace ConsoleApplication3
                             valor = deposit,
                             nome = username
                         };
-                        string dep = PostGet.Postread("user/deposit", JObject.Parse(JsonConvert.SerializeObject(depos)));
+                        string dep = PostGet.Postread("user/deposit",
+                            JObject.Parse(JsonConvert.SerializeObject(depos)));
                         break;
                     case "5": //LEVANTA
                         Console.WriteLine("Selecione moeda:");
@@ -99,7 +101,7 @@ namespace ConsoleApplication3
                                           ("3- Libras \n") +
                                           ("4- Cardano \n"));
                         int moedital = int.Parse(Console.ReadLine());
-                        int moedita = moedital - 1;
+                        int moedita = moedital +5;
                         Console.WriteLine("Quantidade a levantar:");
                         int levantar = int.Parse(Console.ReadLine());
 
@@ -109,7 +111,7 @@ namespace ConsoleApplication3
                             valor = levantar,
                             nome = username
                         };
-                        string lev = PostGet.Postread("user/withdraw",
+                        string lev = PostGet.Postread("user/withdrawl",
                             JObject.Parse(JsonConvert.SerializeObject(levanta)));
                         break;
                     case "6": //LOG OUT
@@ -117,7 +119,12 @@ namespace ConsoleApplication3
                         p = false;
                         break;
                     case "7": //DELETE
-                        string del = PostGet.Getread("user/delete/" + username);
+                        var del = new
+                        {
+                            nome = username
+                        };
+                        string dele = PostGet.Getread("user/delete/" + username);
+                        Environment.Exit(0);
                         break;
                     case "8": //TRADE
                         Console.WriteLine("Trocar: \n");
