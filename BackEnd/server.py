@@ -67,7 +67,7 @@ def login():
         return {"sucess": "Log in com sucesso"}
 
 
-@app.route('/user/wallet/<user>', method=['POST'])
+@app.route('/user/wallet/<user>', methods=['POST'])
 def getwallet(username):
     return userController.getwallet(userController.idfromname(username))
 

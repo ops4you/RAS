@@ -64,7 +64,6 @@ def criarAposta(clube1, clube2, oddsw, oddsd, oddsl, desporto, data_inicio="2022
 
 # função que devolve todas as aposta abertas (estado = 1)
 def getApostas():
-    connection = connect_db()
     query = f'''
         SELECT * FROM apostaColetiva WHERE estado = 1;
     '''
