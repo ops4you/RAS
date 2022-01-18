@@ -1,6 +1,8 @@
 using System;
+using System.CodeDom;
 using System.Configuration;
 using System.IO.Pipes;
+using System.Runtime.Remoting.Messaging;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
@@ -12,95 +14,75 @@ namespace ConsoleApplication3
     {
         static void Main(string[] args)
         {
-            bool p = true;
-            while (p)
+            Boolean pi = true;
+            while (pi)
             {
-                Welcome();
-            }
-        }
-        private static void Welcome()
-        {
-            bool p = true;
-            while (p)
-            {
-                Console.WriteLine("\nRASBet ---- BEM VINDO ---- RASBet\n" +
-                                  "-----------------------------------\n" +
-                                  "| MENU                            |\n" +
-                                  "|                                 |\n" +
-                                  "|1. Log In                        |\n" +
-                                  "|2. Sign Up                       |\n" +
-                                  "-----------------------------------");
-                Console.WriteLine("Choose menu item: ");
-                int escolha = int.Parse(Console.ReadLine());
-                switch (escolha)
+                //Welcome();
+                bool p = true;
+                while (p)
                 {
-                    case 1:
-                        Console.WriteLine("\n RASBet ---- LOG IN ---- RASBet");
+                    Console.WriteLine("\nRASBet ---- BEM VINDO ---- RASBet\n" +
+                                      "-----------------------------------\n" +
+                                      "| MENU                            |\n" +
+                                      "|                                 |\n" +
+                                      "|1. Log In                        |\n" +
+                                      "|2. Sign Up                       |\n" +
+                                      "|3. Fechar                        |\n" +
+                                      "-----------------------------------");
+                    Console.WriteLine("Choose menu item: ");
+                    String escolha = Console.ReadLine();
+                    switch (escolha)
+                    {
+                        case "1":
+                            //Login();
+                            Console.WriteLine("\n RASBet ---- LOG IN ---- RASBet");
 
-                        Console.WriteLine("Username: ");
-                        string username = Console.ReadLine();
-                        //Console.WriteLine("\n");
-
-                        Console.WriteLine("Password: ");
-                        string password = Console.ReadLine();
-                        //Console.WriteLine("\n");
-
-                        var logi = new
-                        {
-                            username = username,
-                            password = password
-                        };
-                        string logg = PostGet.Postread("user/login", JObject.Parse(JsonConvert.SerializeObject(logi)));
-                        dynamic json = JsonConvert.DeserializeObject(logg);
-
-                        if (json["error"] == null)
-                        {
-                            Console.WriteLine((string) json["sucess"]);
-                            Console.WriteLine("Bem Vindo " + username);
-                            p = false;
-                            Afterlogin(username);
-                        }
-                        else Console.WriteLine((string) json["error"]);
-
-                        /*while (json["error"])
-                        {
                             Console.WriteLine("Username: ");
-                            username = Console.ReadLine();
+                            string username = Console.ReadLine();
                             //Console.WriteLine("\n");
 
                             Console.WriteLine("Password: ");
-                            password = Console.ReadLine();
+                            string password = Console.ReadLine();
                             //Console.WriteLine("\n");
 
-                            logi = new
+                            var logi = new
                             {
                                 username = username,
                                 password = password
                             };
-                            logg = PostGet.Postread("user/login", JObject.Parse(JsonConvert.SerializeObject(logi)));
-                            json = JsonConvert.DeserializeObject(logg);
-                        }*/
-                        break;
+                            string logg = PostGet.Postread("user/login",
+                                JObject.Parse(JsonConvert.SerializeObject(logi)));
+                            dynamic json = JsonConvert.DeserializeObject(logg);
 
-
-                    case 2:
-
-                        Boolean poi = true;
-                        while (poi)
-                            try
+                            if (json["error"] == null)
                             {
-                                SignUp();
-                                poi = false;
+                                Console.WriteLine((string) json["sucess"]);
+                                Console.WriteLine("Bem Vindo " + username);
+                                Afterlogin(username);
                             }
-                            catch (Exception e)
-                            {
-                                Console.WriteLine("Nif deve ser um número");
-                                poi = true;
-                            }
+                            else Console.WriteLine((string) json["error"]);
 
-                        break;
-                        static void SignUp()
-                        {
+                            /*while (json["error"])
+                            {
+                                Console.WriteLine("Username: ");
+                                username = Console.ReadLine();
+                                //Console.WriteLine("\n");
+                
+                                Console.WriteLine("Password: ");
+                                password = Console.ReadLine();
+                                //Console.WriteLine("\n");
+                
+                                logi = new
+                                {
+                                    username = username,
+                                    password = password
+                                };
+                                logg = PostGet.Postread("user/login", JObject.Parse(JsonConvert.SerializeObject(logi)));
+                                json = JsonConvert.DeserializeObject(logg);
+                            }*/
+                            break;
+                        case "2":
+                            //SignUp();
                             Console.WriteLine("\n RASBet ---- SIGN UP ---- RASBet");
                             //Console.WriteLine("\n");
 
@@ -133,11 +115,9 @@ namespace ConsoleApplication3
                                 repPassword = Console.ReadLine();
                             }
 
-                            Console.WriteLine("Nif: ");
-                            int nif = int.Parse(Console.ReadLine());
-                            
+                            Console.WriteLine("Nif: (apenas números)");
+                            String nif = Console.ReadLine();
                             //Console.WriteLine("\n");
-
 
                             Console.WriteLine("Data Nascimento (dd/mm/aaaa): ");
                             DateTime userDateTime;
@@ -235,9 +215,405 @@ namespace ConsoleApplication3
                                 Afterlogin(newusername);
                             }
                             else Console.WriteLine((string) jsone["error"]);
-                        }
+
+                            break;
+                        case "3":
+                            Console.WriteLine("Até Breve");
+                            Environment.Exit(0);
+                            break;
+                    }
                 }
             }
+        }
+        public static void Welcome()
+        {
+            bool p = true;
+            while (p)
+            {
+                Console.WriteLine("\nRASBet ---- BEM VINDO ---- RASBet\n" +
+                                  "-----------------------------------\n" +
+                                  "| MENU                            |\n" +
+                                  "|                                 |\n" +
+                                  "|1. Log In                        |\n" +
+                                  "|2. Sign Up                       |\n" +
+                                  "|3. Fechar                        |\n" +
+                                  "-----------------------------------");
+                Console.WriteLine("Choose menu item: ");
+                String escolha = Console.ReadLine();
+                switch (escolha)
+                {
+                    case "1":
+                        //Login();
+                        Console.WriteLine("\n RASBet ---- LOG IN ---- RASBet");
+
+                        Console.WriteLine("Username: ");
+                        string username = Console.ReadLine();
+                        //Console.WriteLine("\n");
+
+                        Console.WriteLine("Password: ");
+                        string password = Console.ReadLine();
+                        //Console.WriteLine("\n");
+
+                        var logi = new
+                        {
+                            username = username,
+                            password = password
+                        };
+                        string logg = PostGet.Postread("user/login", JObject.Parse(JsonConvert.SerializeObject(logi)));
+                        dynamic json = JsonConvert.DeserializeObject(logg);
+
+                        if (json["error"] == null)
+                        {
+                            Console.WriteLine((string) json["sucess"]);
+                            Console.WriteLine("Bem Vindo " + username);
+                            Afterlogin(username);
+                        }
+                        else Console.WriteLine((string) json["error"]);
+
+                        /*while (json["error"])
+                        {
+                            Console.WriteLine("Username: ");
+                            username = Console.ReadLine();
+                            //Console.WriteLine("\n");
+            
+                            Console.WriteLine("Password: ");
+                            password = Console.ReadLine();
+                            //Console.WriteLine("\n");
+            
+                            logi = new
+                            {
+                                username = username,
+                                password = password
+                            };
+                            logg = PostGet.Postread("user/login", JObject.Parse(JsonConvert.SerializeObject(logi)));
+                            json = JsonConvert.DeserializeObject(logg);
+                        }*/
+                        break;
+                    case "2":
+                        //SignUp();
+                        Console.WriteLine("\n RASBet ---- SIGN UP ---- RASBet");
+            //Console.WriteLine("\n");
+
+            Console.WriteLine("Nome: ");
+            string nome = Console.ReadLine();
+            //Console.WriteLine("\n");
+
+            Console.WriteLine("Username: ");
+            string newusername = Console.ReadLine();
+            //Console.WriteLine("\n");
+
+            Console.WriteLine("Email: ");
+            string email = Console.ReadLine();
+            //Console.WriteLine("\n");
+
+            Console.WriteLine("Password: ");
+            string newpassword = Console.ReadLine();
+            //Console.WriteLine("\n");
+
+            Console.WriteLine("Repeat Password: ");
+            string repPassword = Console.ReadLine();
+            //Console.WriteLine("\n");
+            while (repPassword != newpassword)
+            {
+                Console.WriteLine("\n !! PASSWORDS NÃO SÃO IGUAIS !!\n");
+                Console.WriteLine("Password: ");
+                newpassword = Console.ReadLine();
+
+                Console.WriteLine("Repeat Password: ");
+                repPassword = Console.ReadLine();
+            }
+
+            Console.WriteLine("Nif: (apenas números)");
+            String nif = Console.ReadLine();
+            //Console.WriteLine("\n");
+
+            Console.WriteLine("Data Nascimento (dd/mm/aaaa): ");
+            DateTime userDateTime;
+
+            while (!DateTime.TryParse(Console.ReadLine(), out userDateTime) ||
+                   userDateTime > DateTime.Now)
+            {
+                Console.WriteLine("Data errada.");
+                Console.WriteLine("REPETE");
+                Console.WriteLine("Data Nascimento (dd/mm/aaaa): ");
+            }
+            //Console.WriteLine("Nasceste no dia: " + userDateTime);
+            // while (userDateTime>(DateTime.Now))
+            // {
+            //     Console.WriteLine("Data errada.");
+            //     Console.WriteLine("REPETE");
+            //     Console.WriteLine("Data Nascimento (dd/mm/aaaa): ");
+            // }
+
+            if (userDateTime.AddYears(18) > DateTime.Now)
+            {
+                Console.WriteLine("Não possui idade legal para jogar");
+                Environment.Exit(0);
+            }
+
+            userDateTime = userDateTime.Date;
+
+            Console.WriteLine("Admin (s/n): ");
+            int fin = 0;
+            String admin = Console.ReadLine();
+            if (admin is "s" or "S")
+            {
+                Console.WriteLine("Admin-Key: ");
+                String key = Console.ReadLine();
+                var i = 1;
+                while (key != "RAS2122" & i < 4)
+                {
+                    Console.WriteLine("\n CHAVE ERRADA (tentativa " + i + "/3)");
+                    Console.WriteLine("Admin-Key: ");
+                    i++;
+                    key = Console.ReadLine();
+                }
+
+                if (key == "RAS2122") fin = 1;
+
+                if (key != "RAS2122")
+                {
+                    Console.WriteLine("Continuar SignUp sem ser admin? (s/n):");
+                    string choose = Console.ReadLine();
+                    if (choose is "s" or "S")
+                    {
+                        admin = "n";
+                        fin = 0;
+                    }
+                    else Environment.Exit(0);
+                }
+            }
+            else
+            {
+                admin = "n";
+                fin = 0;
+            }
+            //Console.WriteLine("\n");
+
+            var signup = new
+            {
+                nome = nome,
+                username = newusername,
+                email = email,
+                password = newpassword,
+                nif = nif,
+                datanasc = userDateTime,
+                admin = fin
+            };
+            string jsonData = JsonConvert.SerializeObject(signup);
+            JObject jsonObject = JObject.Parse(jsonData);
+            string a = PostGet.Postread("user/register", jsonObject);
+            dynamic jsone = JsonConvert.DeserializeObject(a);
+            //Console.WriteLine(jsonData);
+
+            //Print the parsed Json object
+            //Console.WriteLine((string)jsonObject["Nome"]);
+            //Console.WriteLine((string)jsonObject["Username"]);
+            //Console.WriteLine((string)jsonObject["Email"]);
+            //Console.WriteLine((string)jsonObject["Password"]);
+            // Console.WriteLine((string)jsonObject["Nif"]);
+            // Console.WriteLine((string)jsonObject["DataNasc"]);
+
+
+            if (jsone["error"] == null)
+            {
+                Console.WriteLine((string) jsone["sucess"]);
+                Console.WriteLine("\nBem-Vindo " + nome);
+                Console.WriteLine("Aposte com consciência.");
+                Afterlogin(newusername);
+            }
+            else Console.WriteLine((string) jsone["error"]);
+                        break;
+                    case "3":
+                        Console.WriteLine("Até Breve");
+                        Environment.Exit(0);
+                        break;
+                }
+            }
+        }
+
+        static void Login()
+        {
+            Console.WriteLine("\n RASBet ---- LOG IN ---- RASBet");
+
+            Console.WriteLine("Username: ");
+            string username = Console.ReadLine();
+            //Console.WriteLine("\n");
+
+            Console.WriteLine("Password: ");
+            string password = Console.ReadLine();
+            //Console.WriteLine("\n");
+
+            var logi = new
+            {
+                username = username,
+                password = password
+            };
+            string logg = PostGet.Postread("user/login", JObject.Parse(JsonConvert.SerializeObject(logi)));
+            dynamic json = JsonConvert.DeserializeObject(logg);
+
+            if (json["error"] == null)
+            {
+                Console.WriteLine((string) json["sucess"]);
+                Console.WriteLine("Bem Vindo " + username);
+                Afterlogin(username);
+            }
+            else Console.WriteLine((string) json["error"]);
+
+            /*while (json["error"])
+            {
+                Console.WriteLine("Username: ");
+                username = Console.ReadLine();
+                //Console.WriteLine("\n");
+
+                Console.WriteLine("Password: ");
+                password = Console.ReadLine();
+                //Console.WriteLine("\n");
+
+                logi = new
+                {
+                    username = username,
+                    password = password
+                };
+                logg = PostGet.Postread("user/login", JObject.Parse(JsonConvert.SerializeObject(logi)));
+                json = JsonConvert.DeserializeObject(logg);
+            }*/
+        }
+
+        static void SignUp()
+        {
+            Console.WriteLine("\n RASBet ---- SIGN UP ---- RASBet");
+            //Console.WriteLine("\n");
+
+            Console.WriteLine("Nome: ");
+            string nome = Console.ReadLine();
+            //Console.WriteLine("\n");
+
+            Console.WriteLine("Username: ");
+            string newusername = Console.ReadLine();
+            //Console.WriteLine("\n");
+
+            Console.WriteLine("Email: ");
+            string email = Console.ReadLine();
+            //Console.WriteLine("\n");
+
+            Console.WriteLine("Password: ");
+            string newpassword = Console.ReadLine();
+            //Console.WriteLine("\n");
+
+            Console.WriteLine("Repeat Password: ");
+            string repPassword = Console.ReadLine();
+            //Console.WriteLine("\n");
+            while (repPassword != newpassword)
+            {
+                Console.WriteLine("\n !! PASSWORDS NÃO SÃO IGUAIS !!\n");
+                Console.WriteLine("Password: ");
+                newpassword = Console.ReadLine();
+
+                Console.WriteLine("Repeat Password: ");
+                repPassword = Console.ReadLine();
+            }
+
+            Console.WriteLine("Nif: (apenas números)");
+            String nif = Console.ReadLine();
+            //Console.WriteLine("\n");
+
+            Console.WriteLine("Data Nascimento (dd/mm/aaaa): ");
+            DateTime userDateTime;
+
+            while (!DateTime.TryParse(Console.ReadLine(), out userDateTime) ||
+                   userDateTime > DateTime.Now)
+            {
+                Console.WriteLine("Data errada.");
+                Console.WriteLine("REPETE");
+                Console.WriteLine("Data Nascimento (dd/mm/aaaa): ");
+            }
+            //Console.WriteLine("Nasceste no dia: " + userDateTime);
+            // while (userDateTime>(DateTime.Now))
+            // {
+            //     Console.WriteLine("Data errada.");
+            //     Console.WriteLine("REPETE");
+            //     Console.WriteLine("Data Nascimento (dd/mm/aaaa): ");
+            // }
+
+            if (userDateTime.AddYears(18) > DateTime.Now)
+            {
+                Console.WriteLine("Não possui idade legal para jogar");
+                Environment.Exit(0);
+            }
+
+            userDateTime = userDateTime.Date;
+
+            Console.WriteLine("Admin (s/n): ");
+            int fin = 0;
+            String admin = Console.ReadLine();
+            if (admin is "s" or "S")
+            {
+                Console.WriteLine("Admin-Key: ");
+                String key = Console.ReadLine();
+                var i = 1;
+                while (key != "RAS2122" & i < 4)
+                {
+                    Console.WriteLine("\n CHAVE ERRADA (tentativa " + i + "/3)");
+                    Console.WriteLine("Admin-Key: ");
+                    i++;
+                    key = Console.ReadLine();
+                }
+
+                if (key == "RAS2122") fin = 1;
+
+                if (key != "RAS2122")
+                {
+                    Console.WriteLine("Continuar SignUp sem ser admin? (s/n):");
+                    string choose = Console.ReadLine();
+                    if (choose is "s" or "S")
+                    {
+                        admin = "n";
+                        fin = 0;
+                    }
+                    else Environment.Exit(0);
+                }
+            }
+            else
+            {
+                admin = "n";
+                fin = 0;
+            }
+            //Console.WriteLine("\n");
+
+            var signup = new
+            {
+                nome = nome,
+                username = newusername,
+                email = email,
+                password = newpassword,
+                nif = nif,
+                datanasc = userDateTime,
+                admin = fin
+            };
+            string jsonData = JsonConvert.SerializeObject(signup);
+            JObject jsonObject = JObject.Parse(jsonData);
+            string a = PostGet.Postread("user/register", jsonObject);
+            dynamic jsone = JsonConvert.DeserializeObject(a);
+            //Console.WriteLine(jsonData);
+
+            //Print the parsed Json object
+            //Console.WriteLine((string)jsonObject["Nome"]);
+            //Console.WriteLine((string)jsonObject["Username"]);
+            //Console.WriteLine((string)jsonObject["Email"]);
+            //Console.WriteLine((string)jsonObject["Password"]);
+            // Console.WriteLine((string)jsonObject["Nif"]);
+            // Console.WriteLine((string)jsonObject["DataNasc"]);
+
+
+            if (jsone["error"] == null)
+            {
+                Console.WriteLine((string) jsone["sucess"]);
+                Console.WriteLine("\nBem-Vindo " + nome);
+                Console.WriteLine("Aposte com consciência.");
+                Afterlogin(newusername);
+            }
+            else Console.WriteLine((string) jsone["error"]);
         }
 
         static void Afterlogin(string username)
@@ -269,15 +645,15 @@ namespace ConsoleApplication3
                                   "|8. Converter moedas              |\n" +
                                   "-----------------------------------");
                 Console.WriteLine("Choose menu item: ");
-                var escolha1 = int.Parse(Console.ReadLine());
+                var escolha1 = Console.ReadLine();
                 switch (escolha1)
                 {
-                    case 1: //DESPORTOS
+                    case "1": //DESPORTOS
                         //todo LISTAR DESPORTOS
                         string desp = PostGet.Getread("user/sports");
                         dynamic json = JsonConvert.DeserializeObject(desp);
                         break;
-                    case 2: //ABERTAS
+                    case "2": //ABERTAS
                         //todo LISTAR APOSTAS ABERTAS
                         //foreach(aposta n)
                         //jogo nr: 
@@ -287,7 +663,7 @@ namespace ConsoleApplication3
                         string bets = PostGet.Getread("bet/bets");
                         dynamic json1 = JsonConvert.DeserializeObject(bets);
                         break;
-                    case 3: //HISTORICO
+                    case "3": //HISTORICO
                         //todo LISTAR HISTÓRICO DE APOSTAS
                         //foreach(aposta n)
                         //jogo nr: 
@@ -301,7 +677,7 @@ namespace ConsoleApplication3
                         string bethistory = PostGet.Getread("user/bethistory");
                         dynamic json2 = JsonConvert.DeserializeObject(bethistory);
                         break;
-                    case 4: //DEPOSIT
+                    case "4": //DEPOSIT
                         Console.WriteLine("Selecione moeda:");
                         Console.WriteLine("1- Euro \n" +
                                           ("2- USD \n") +
@@ -318,7 +694,7 @@ namespace ConsoleApplication3
                         };
                         string dep = PostGet.Postread("user/trade", JObject.Parse(JsonConvert.SerializeObject(depos)));
                         break;
-                    case 5: //LEVANTA
+                    case "5": //LEVANTA
                         Console.WriteLine("Selecione moeda:");
                         Console.WriteLine("1- Euro \n" +
                                           ("2- USD \n") +
@@ -337,14 +713,14 @@ namespace ConsoleApplication3
                         string lev = PostGet.Postread("user/trade",
                             JObject.Parse(JsonConvert.SerializeObject(levanta)));
                         break;
-                    case 6: //LOG OUT
+                    case "6": //LOG OUT
                         Console.WriteLine("Esperamos vê-lo em breve!");
                         p = false;
                         break;
-                    case 7: //DELETE
+                    case "7": //DELETE
                         string del = PostGet.Getread("user/delete/" + username);
                         break;
-                    case 8: //TRADE
+                    case "8": //TRADE
                         Console.WriteLine("Trocar: \n");
                         Console.WriteLine("1- Euro \n" +
                                           ("2- USD \n") +
