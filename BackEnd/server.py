@@ -104,4 +104,5 @@ def checksports(username):
 
 
 if __name__ == '__main__':
+    print("teste123")
     app.run(debug=True)
