@@ -55,7 +55,7 @@ def criarAposta(clube1, clube2, oddsw, oddsd, oddsl, desporto, data_inicio="2022
     connection = connect_db()
 
     query = f'''
-        INSERT INTO apostaColetiva (estado, clube1, clube2, oddsw, oddsd, oddsl, desporto, data_inicio, data_fim) 
+        INSERT INTO aposta (estado, clube1, clube2, oddsw, oddsd, oddsl, desporto, data_inicio, data_fim) 
         VALUES (-1, '{clube1}', '{clube2}', {oddsw}, {oddsd}, {oddsl}, {desporto}, {data_inicio}, {data_fim});
     '''
 
@@ -65,22 +65,52 @@ def criarAposta(clube1, clube2, oddsw, oddsd, oddsl, desporto, data_inicio="2022
 # função que devolve todas as aposta abertas (estado = 1)
 def getApostas():
     query = f'''
-        SELECT * FROM apostaColetiva WHERE estado = 1;
+        SELECT * FROM apostaColetiva WHERE estado = -1;
     '''
 
-    return read_query(query)
+    lista = read_query(query)
+
+    result = {}
+    for x in lista:
+        tmp = {x[0]: {
+            "clube1": x[2],
+            "clube2": x[3],
+            "odsw": x[4],
+            "odsd": x[5],
+            "odsl": x[6],
+            "desporto": x[7]
+        }}
+        result.update(tmp)
+
+    return result
 
 
 # função quando um user quiser fazer uma aposta
 # resultado = 0 se clube 1 ganhar, 1 se draw, 2 se clube 2 ganhar
-def fazerAposta(user_id, apostaColetiva_id, resultado, moeda_id, valor):
+# em teoria se aposta_id fosse uma lista de apostas tbm funcionava ( given que tbm tens uma lista de resultados)
+def fazerAposta(user_id, aposta_id, resultado, moeda_id, valor):
     connection = connect_db()
-    query = f'''
-        INSERT INTO userApostaColectiva (user_id, apostaColetiva_id, resultado, moeda_id, valor)
-        VALUES ({user_id},{apostaColetiva_id}, {resultado}, {moeda_id},{valor})
-    '''
 
-    return execute_query(connection, query)
+    if not User.removecredito(moeda_id, valor, user_id):
+        return 400
+
+    query = f'''
+            INSERT INTO userApostaColectiva (user_id, moeda_id, valor)
+            VALUES ({user_id}, {moeda_id},{valor})
+        '''
+    execute_query(connection, query)
+
+    query2 = f'''
+            SELECT LAST_INSERT_ID();)
+        '''
+    # se de erro aqui tentar tirar o [0] e se tbm der erro tentrar trocar po [0][0]
+    apcid = read_query(query2)[0]
+
+    query3 = f'''
+              INSERT INTO apostaComposta (resultado, userApostaColectiva, aposta_id)
+              VALUES ({resultado}, {apcid},{aposta_id})
+          '''
+    return execute_query(connection, query3)
 
 
 def closeAposta(aposta_id, result):
@@ -118,5 +148,5 @@ def checkapostacoletiva(apostaColetiva_id):
 
         # multiplies the current multiplyer with if he won the bet or not with the ods
         mult = mult * (x[1] == result2[1]) * result2[3 + x[1]]
-
-    User.addcredito(result[2], result[3] * mult, result[1])
+    if mult > 0:
+        User.addcredito(result[2], result[3] * mult, result[1])

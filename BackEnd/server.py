@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect
-import Controllers.userController as userController
+from BackEnd.Controllers import userController
+from BackEnd.Controllers import apostaColetivaController as aposta
 
 app = Flask(__name__)
 
@@ -98,6 +99,38 @@ def trade():
 @app.route('/user/sports/<user>')
 def checksports(username):
     return userController.checksport(userController.idfromname(username))
+
+
+@app.route('/bet/bets')
+def showbets():
+    return aposta.getApostas()
+
+
+
+@app.route('/bet/make')
+def makebet():
+    return aposta.fazerAposta(request.json[userController.idfromname(request.json["username"])],
+                              request.json["aposta_id"],
+                              request.json["resultado"],
+                              request.json["moeda_id"],
+                              request.json["valor"])
+
+
+@app.route('/bet/create')
+# clube1, clube2, oddsw, oddsd, oddsl, desporto
+def createbet():
+    clube1 = request.json["clube1"]
+    clube2 = request.json["clube2"]
+    oddsw = request.json["oddsw"]
+    oddsd = request.json["oddsd"]
+    oddsl = request.json["oddsl"]
+    desporto = request.json["desporto"]
+    return aposta.criarAposta(clube1, clube2, oddsw, oddsd, oddsl, desporto)
+
+
+@app.route('/bet/close')
+def closebet():
+    return aposta.closeAposta(request.json["aposta_id"], request.json["result"])
 
 
 if __name__ == '__main__':
