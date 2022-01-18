@@ -59,20 +59,24 @@ def criarAposta(clube1, clube2, oddsw, oddsd, oddsl, desporto, data_inicio="2022
         VALUES (-1, '{clube1}', '{clube2}', {oddsw}, {oddsd}, {oddsl}, '{desporto}', '{data_inicio}', '{data_fim}');
     '''
 
-    return execute_query(connection, query)
+    return str(execute_query(connection, query))
 
 
-# função que devolve todas as aposta abertas (estado = 1)
+# função que devolve todas as aposta abertas (estado = -1)
 def getApostas():
     query = f'''
-        SELECT * FROM mydb.apostaColetiva WHERE estado = -1;
+        SELECT * FROM mydb.aposta WHERE estado = -1;
     '''
 
     lista = read_query(query)
 
     result = {}
+    print(lista)
+
     for x in lista:
+        print(x)
         tmp = {x[0]: {
+            "id": x[0],
             "clube1": x[2],
             "clube2": x[3],
             "odsw": x[4],
@@ -90,27 +94,41 @@ def getApostas():
 # em teoria se aposta_id fosse uma lista de apostas tbm funcionava ( given que tbm tens uma lista de resultados)
 def fazerAposta(user_id, aposta_id, resultado, moeda_id, valor):
     connection = connect_db()
+    print("TESTE 97")
 
-    if not User.removecredito(moeda_id, valor, user_id):
-        return 400
+    if ("0" == User.removecredito(moeda_id, valor, user_id)):
+        return "400"
 
+    print(user_id)
+    print(moeda_id)
+    print(valor)
     query = f'''
             INSERT INTO mydb.userApostaColectiva (user_id, moeda_id, valor)
-            VALUES ({user_id}, {moeda_id},{valor})
+            VALUES ({user_id}, {moeda_id}, {valor})
         '''
-    execute_query(connection, query)
+
+    if 400 == execute_query(connection, query):
+        print("TESTE 108")
+        return "400"
+
+
 
     query2 = f'''
-            SELECT LAST_INSERT_ID();)
-        '''
-    # se de erro aqui tentar tirar o [0] e se tbm der erro tentrar trocar po [0][0]
-    apcid = read_query(query2)[0]
+            SELECT MAX( id ) FROM mydb.userApostaColectiva;
 
+        '''
+    print("TESTE 116")
+    # se de erro aqui tentar tirar o [0] e se tbm der erro tentrar trocar po [0][0]
+    print("Fazer aposta -> q2")
+    apcid = read_query(query2)
+    print(apcid[0][0])
+    print(apcid)
+    print("testeeeeee")
     query3 = f'''
-              INSERT INTO mydb.apostaComposta (resultado, userApostaColectiva, aposta_id)
-              VALUES ({resultado}, {apcid},{aposta_id})
+              INSERT INTO mydb.aposta_composta (resultado, userApostaColectiva, aposta_id)
+              VALUES ({resultado}, {apcid[0][0]},{aposta_id})
           '''
-    return execute_query(connection, query3)
+    return str(execute_query(connection, query3))
 
 
 def closeAposta(aposta_id, result):
@@ -120,21 +138,28 @@ def closeAposta(aposta_id, result):
             UPDATE mydb.aposta SET resultado={result} WHERE id={aposta_id};
         '''
 
-    execute_query(connection, query)
+    if execute_query(connection, query) == 400:
+        return "400"
 
     query2 = f'''
-            SELECT userApostaColetiva.* FROM mydb.userApostaColetiva,mydb.apostaComposta
-            WHERE apostaComposta.aposta_id={aposta_id} AND apostaComposta.userApostaColetiva_id = userApostaColetiva.aspotaColetiva_id
+            SELECT * FROM mydb.userApostaColectiva,mydb.aposta_composta
+            WHERE aposta_composta.aposta_id={aposta_id} 
+            AND aposta_composta.userApostaColectiva_id = userApostaColectiva.id
         '''
     result = read_query(query2)
+
+    if result == 400:
+        return "400"
 
     for x in result:
         checkapostacoletiva(x[0])
 
+    return "200"
+
 
 def checkapostacoletiva(apostaColetiva_id):
     query = f'''
-            SELECT * FROM mydb.apostaComposta WHERE userApostaColetiva_id={apostaColetiva_id};
+            SELECT * FROM mydb.aposta_composta WHERE userApostaColectiva_id={apostaColetiva_id};
         '''
 
     result = read_query(query)

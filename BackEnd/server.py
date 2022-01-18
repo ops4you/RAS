@@ -15,9 +15,9 @@ def user(user_name):
 
     return {
         "user_id": user[0][0],
-        "name": user[0][1],
-        "password": user[0][2],
-        "amount": user[0][3],
+        "username": user[0][1],
+        "name": user[0][2],
+        "password": user[0][3],
         "isAdmin": user[0][4],
         "email": user[0][5],
         "nif": user[0][6],
@@ -70,9 +70,9 @@ def getwallet(user):
     return userController.getwallet(userController.idfromname(user))
 
 
-@app.route('/user/bets/<user>')
+@app.route('/user/bets/<username>')
 def checkbets(username):
-    userController.checkBets()
+    return userController.checkBets(userController.idfromname(username))
 
 
 @app.route('/user/delete/<user>')
@@ -87,12 +87,14 @@ def checkbethistory(username):
 
 @app.route('/user/deposit', methods=['POST'])
 def deposit():
-    return userController.addcredito(request.json['moeda'], request.json['valor'], userController.idfromname(request.json['nome']))
+    return userController.addcredito(request.json['moeda'], request.json['valor'],
+                                     userController.idfromname(request.json['nome']))
 
 
 @app.route('/user/withdrawl', methods=['POST'])
 def withdrawl():
-    return userController.removecredito(request.json['moeda'], request.json['valor'], userController.idfromname(request.json['nome']) )
+    return userController.removecredito(request.json['moeda'], request.json['valor'],
+                                        userController.idfromname(request.json['nome']))
 
 
 @app.route('/user/trade', methods=['POST'])
@@ -111,17 +113,16 @@ def showbets():
     return aposta.getApostas()
 
 
-
-@app.route('/bet/make')
+@app.route('/bet/make', methods=['POST'])
 def makebet():
-    return aposta.fazerAposta(request.json[userController.idfromname(request.json["username"])],
+    return aposta.fazerAposta(userController.idfromname(request.json["username"]),
                               request.json["aposta_id"],
                               request.json["resultado"],
                               request.json["moeda_id"],
                               request.json["valor"])
 
 
-@app.route('/bet/create')
+@app.route('/bet/create', methods=['POST'])
 # clube1, clube2, oddsw, oddsd, oddsl, desporto
 def createbet():
     clube1 = request.json["clube1"]

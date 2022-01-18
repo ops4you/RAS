@@ -177,7 +177,7 @@ def removecredito(moeda_id, valor, user_id):
 
     valorBD = (read_query(query))
 
-    print (valorBD)
+    print(valorBD)
     if int(valorBD[0][0]) < int(valor):
         return "0"
 
@@ -219,16 +219,23 @@ def checkBets(userid):
     #           SELECT aposta.* from aposta,apostaComposta,userApostaColectiva
     #           WHERE apostaComposta.aposta_id = aposta.id AND apostaComposta.userApostaColetiva_id=userApostaColectiva.apostaColetiva_id AND userApostaColectiva.user_id={userid}
     #       '''
+    #query = f'''
+    #            SELECT * FROM mydb.aposta_composta, mydb.userApostaColectiva
+    #            WHERE mydb.aposta_composta.userApostaColectiva_id = aposta_composta.userApostaColectiva_id
+    #            AND userApostaColectiva.user_id={userid};
+    #        '''
+
     query = f'''
-            SELECT * FROM mydb.aspostaComposta WHERE mydb.apostaComposta.userApostaColetiva_id=mydb.userApostaColectiva.apostaColetiva_id AND mydb.userApostaColectiva.user_id={userid} 
-        '''
+            SELECT * FROM mydb.userApostaColectiva WHERE user_id = {userid}
+    '''
 
     lista = read_query(query)
+    print(lista)
     result = {}
     for l in lista:
         tmp = {l[0]: {
-            "resultado": l[1],
-            "amount": l[2],
+            "resultado": l[2],
+            "amount": l[3],
         }}
         result.update(tmp)
 
@@ -238,7 +245,7 @@ def checkBets(userid):
 def checksport(userid):
     query = f'''
                 SELECT aposta.desporto FROM mydb.aposta, mydb.aspotaComposta, mydb.userApostaColetiva 
-                WHERE aposta.id =apostaComposta.aposta_id AND apostaComposta.userApostaColetiva_id=userApostaColectiva.apostaColetiva_id AND userApostaColectiva.user_id={userid} 
+                WHERE aposta.id =apostaComposta.aposta_id AND apostaComposta.userApostaColetiva_id=userApostaColectiva.id AND userApostaColectiva.user_id={userid} 
             '''
 
     lista = read_query(query)
