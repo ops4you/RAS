@@ -71,7 +71,7 @@ def register_user(username, name, password, isadmin, email, nif, dn):
 
     for x in read_query(queryMoeda):
         query = f'''
-            INSERT INTO mydb.userMoeda (user_id, moeda_id, quantidade)
+            INSERT INTO userMoeda (user_id, moeda_id, quantidade)
             VALUES ({user_id}, {x}, 0);
         '''
         # se der erro aqui tentar com x[0] e depois x[0][0]
@@ -125,10 +125,12 @@ def checkcredentials(name, password):
 def getwallet(user_id):
     query = f'''
         SELECT moeda.nome,userMoeda.quantidade FROM mydb.userMoeda INNER JOIN moeda ON moeda.moeda_id=userMoeda.moeda_id WHERE userMoeda.user_id={user_id}
+
     '''
 
     lista = read_query(query)
     result = {}
+    print (lista)
     for x in lista:
         tmp = {x[0]: x[1]}
         result.update(tmp)
