@@ -9,10 +9,14 @@ namespace ConsoleApplication3
                 public static void Afterlogin(string username)
         {
             bool p = true;
-            double saldo = 0.00;
-
             //get a partir do username
-            PostGet.Getread("user/wallet/" + username);
+            string ar = PostGet.Getread("user/wallet/" + username);
+            dynamic json11 = JsonConvert.DeserializeObject(ar);
+            double saldoE = Double.Parse((string)json11["euro"]);
+            double saldoU = Double.Parse((string)json11["usd"]);
+            double saldoL = Double.Parse((string)json11["gbp"]);
+            double saldoA = Double.Parse((string)json11["ada"]);
+            
             while (p)
             {
                 Console.WriteLine("\n \n");
@@ -20,7 +24,10 @@ namespace ConsoleApplication3
                 Console.WriteLine("\nRASBet ---- BEM VINDO ---- RASBet\n" +
                                   ("- \n") +
                                   ("Bem-Vindo " + username + "\n") +
-                                  ("Saldo: " + saldo + "€ \n") + //colocar para diferentes moedas no prt
+                                  ("Eur: " + saldoE + "€ \n") + 
+                                  ("USD: " + saldoU + "$ \n") + 
+                                  ("GBP: " + saldoL + "£ \n") + 
+                                  ("ADA: " + saldoA + "ADA \n") + 
                                   ("- \n") +
                                   "-----------------------------------\n" +
                                   "| MENU                            |\n" +
@@ -79,10 +86,11 @@ namespace ConsoleApplication3
                         int deposit = int.Parse(Console.ReadLine());
                         var depos = new
                         {
-                            coin = moeda,
-                            deposi = deposit
+                            moeda = moeda,
+                            valor = deposit,
+                            nome = username
                         };
-                        string dep = PostGet.Postread("user/trade", JObject.Parse(JsonConvert.SerializeObject(depos)));
+                        string dep = PostGet.Postread("user/deposit", JObject.Parse(JsonConvert.SerializeObject(depos)));
                         break;
                     case "5": //LEVANTA
                         Console.WriteLine("Selecione moeda:");
@@ -97,10 +105,11 @@ namespace ConsoleApplication3
 
                         var levanta = new
                         {
-                            coin = moedita,
-                            levant = levantar
+                            moeda = moedita,
+                            valor = levantar,
+                            nome = username
                         };
-                        string lev = PostGet.Postread("user/trade",
+                        string lev = PostGet.Postread("user/withdraw",
                             JObject.Parse(JsonConvert.SerializeObject(levanta)));
                         break;
                     case "6": //LOG OUT

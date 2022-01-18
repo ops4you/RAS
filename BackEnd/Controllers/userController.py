@@ -57,8 +57,8 @@ def idfromname(username):
 def register_user(username, name, password, isadmin, email, nif, dn):
     connection = connect_db()
     query = f'''
-        INSERT INTO user (username, name, password, isAdmin, email, nif, data_nascimento) 
-        VALUES  ('{username}', '{name}', {password}, {isadmin}, {email}, {nif}, {dn});
+        INSERT INTO mydb.user (username, name, password, isAdmin, email, nif, data_nascimento) 
+        VALUES  ('{username}', '{name}', '{password}', {isadmin}, '{email}', '{nif}', '{dn}');
     '''
     execute_query(connection,query)
     queryMoeda = f'''
@@ -74,7 +74,7 @@ def register_user(username, name, password, isadmin, email, nif, dn):
     for x in read_query(queryMoeda):
         query = f'''
             INSERT INTO userMoeda (user_id, moeda_id, quantidade)
-            VALUES ('{user_id}', '{x[0]}', '0');
+            VALUES ({user_id}, {x[0]}, 0);
         '''
 
     execute_query(connection, query)
@@ -126,14 +126,18 @@ def checkcredentials(name, password):
 # funcao que devolve a wallet do utilizador
 def getwallet(user_id):
     query = f'''
-        SELECT moeda.nome,userMoeda.quantidade FROM userMoeda,modeda INNET JOIN moeda ON moeda.moeda_id=userMoeda.moeda_id WHERE userMoeda.user_id={user_id}
+        SELECT moeda.nome,userMoeda.quantidade FROM userMoeda INNER JOIN moeda ON moeda.moeda_id=userMoeda.moeda_id WHERE userMoeda.user_id={user_id}
     '''
 
     lista = read_query(query)
     result = {}
+    print (lista)
     for x in lista:
         tmp = {x[0]: x[1]}
         result.update(tmp)
+
+    return result
+
 
 
 # função que verifica se um dado user tem dinheiro para fazer a aposta que pretende
