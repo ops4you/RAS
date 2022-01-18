@@ -68,8 +68,13 @@ def login():
 
 
 @app.route('/user/wallet/<user>', methods=['POST'])
+<<<<<<< Updated upstream
 def getwallet(username):
     return userController.getwallet(userController.idfromname(username))
+=======
+def getwallet(user_id):
+    return userController.getwallet(user_id)
+>>>>>>> Stashed changes
 
 
 @app.route('/user/bets/<user>')
