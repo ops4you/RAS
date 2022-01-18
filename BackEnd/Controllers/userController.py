@@ -60,6 +60,7 @@ def register_user(username, name, password, isadmin, email, nif, dn):
         INSERT INTO user (username, name, password, isAdmin, email, nif, data_nascimento) 
         VALUES  ('{username}', '{name}', {password}, {isadmin}, {email}, {nif}, {dn});
     '''
+    execute_query(connection,query)
     queryMoeda = f'''
         SELECT moeda_id FROM moeda;
     '''
@@ -68,7 +69,7 @@ def register_user(username, name, password, isadmin, email, nif, dn):
                 SELECT user_id FROM user WHERE username = "{username}";
             '''
 
-    user_id = (read_query(queryUser)[0])[0]
+    user_id = (read_query(queryUser)[0][0])
 
     for x in read_query(queryMoeda):
         query = f'''
