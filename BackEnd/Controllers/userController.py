@@ -67,6 +67,7 @@ def register_user(username, name, password, isadmin, email, nif, dn):
     queryUser = f'''
                 SELECT user_id FROM user WHERE username = "{username}";
             '''
+
     user_id = (read_query(queryUser)[0])[0]
 
     for x in read_query(queryMoeda):
