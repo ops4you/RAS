@@ -1,6 +1,6 @@
 import mysql.connector
 from mysql.connector import Error
-import BackEnd.Controllers.userController as User
+from BackEnd.Controllers import userController as User
 
 
 def connect_db():
