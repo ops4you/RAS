@@ -14,14 +14,16 @@ namespace ConsoleApplication3
 {
     class Postread
     {
-        public void Posteread(string url)
+        public void Posteread(string url, string method)
         {
-            try{
-                //string webAddr="http://gurujsonrpc.appspot.com/guru"; //url onde ir buscar
+            try
+            {
+                string basic="http://127.0.0.1:5000/"; //url onde ir buscar
+                string final = basic + url;
 
-                var httpWebRequest = WebRequest.CreateHttp(url);
+                var httpWebRequest = WebRequest.CreateHttp(final);
                 httpWebRequest.ContentType = "application/json; charset=utf-8";
-                httpWebRequest.Method = "POST";    
+                httpWebRequest.Method = method;    //method pode ser "POST", "GET"
 
                 using (var streamWriter = new StreamWriter(httpWebRequest.GetRequestStream()))
                 {
@@ -39,7 +41,9 @@ namespace ConsoleApplication3
                     //Now you have your response.
                     //or false depending on information in the response     
                 }
-            }catch(WebException ex){
+            }
+            catch(WebException ex)
+            {
                 Console.WriteLine(ex.Message);
             }
         }
