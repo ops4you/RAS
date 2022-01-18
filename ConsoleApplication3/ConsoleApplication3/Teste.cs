@@ -196,7 +196,7 @@ namespace ConsoleApplication3
                                  string nome = "Default";
                                  
                                  //get a partir do username
-                                 //PostGet.Getread("user/wallet/"+user);             
+                                 PostGet.Getread("user/wallet/" + username);             
          
                                  Console.WriteLine("\n \n");
                                  //Menu principal after Log IN
@@ -221,12 +221,12 @@ namespace ConsoleApplication3
                                  int escolha1 = int.Parse(Console.ReadLine());
                                  switch (escolha1)
                                  {
-                                     case 1:
+                                     case 1: //DESPORTOS
                                          //todo LISTAR DESPORTOS
                                          string desp = PostGet.Getread("user/sports");
                                          dynamic json = JsonConvert.DeserializeObject(desp);
                                          break;
-                                     case 2:
+                                     case 2: //ABERTAS
                                          //todo LISTAR APOSTAS ABERTAS
                                          //foreach(aposta n)
                                          //jogo nr: 
@@ -236,7 +236,7 @@ namespace ConsoleApplication3
                                          string bets = PostGet.Getread("bet/bets");
                                          dynamic json1 = JsonConvert.DeserializeObject(bets);
                                          break;
-                                     case 3:
+                                     case 3: //HISTORICO
                                          //todo LISTAR HISTÓRICO DE APOSTAS
                                          //foreach(aposta n)
                                          //jogo nr: 
@@ -249,7 +249,6 @@ namespace ConsoleApplication3
                                          //-> (ganhos ou LOST)
                                          string bethistory = PostGet.Getread("user/bethistory");
                                          dynamic json2 = JsonConvert.DeserializeObject(bethistory);
-
                                          break;
                                      case 4: //DEPOSIT
                                          Console.WriteLine("Selecione moeda:");
@@ -257,46 +256,57 @@ namespace ConsoleApplication3
                                                            ("2- USD \n") +
                                                            ("3- Libras \n") +
                                                            ("4- Cardano \n"));
-                                         int moeda = int.Parse(Console.ReadLine()); 
+                                         int moedal = int.Parse(Console.ReadLine());
+                                         int moeda = moedal - 1;
                                          Console.WriteLine("Quantidade a depositar:");
                                          int deposit = int.Parse(Console.ReadLine()); 
+                                         var depos = new
+                                         {
+                                             coin = moeda,
+                                             deposi = deposit
+                                         };
+                                         string dep = PostGet.Postread("user/trade", JObject.Parse(JsonConvert.SerializeObject(depos)));
                                          break;
-                                     case 5:
+                                     case 5: //LEVANTA
                                          Console.WriteLine("Selecione moeda:");
                                          Console.WriteLine("1- Euro \n" +
                                                            ("2- USD \n") +
                                                            ("3- Libras \n") +
                                                            ("4- Cardano \n"));
-                                         int moedita = int.Parse(Console.ReadLine());
+                                         int moedital = int.Parse(Console.ReadLine());
+                                         int moedita = moedital - 1;
                                          Console.WriteLine("Quantidade a levantar:");
                                          int levantar = int.Parse(Console.ReadLine()); 
+                                         
+                                         var levanta = new
+                                         {
+                                             coin = moedita,
+                                             levant = levantar
+                                         };
+                                         string lev = PostGet.Postread("user/trade", JObject.Parse(JsonConvert.SerializeObject(levanta)));
                                          break;
-                                     case 6:
+                                     case 6: //LOG OUT
                                          Console.WriteLine("Esperamos vê-lo em breve!");
                                          Environment.Exit(0);
                                          break;
-                                     case 7:
-                                         //todo apagar conta
-                                         var adios = new
-                                         {
-                                             username = username
-                                         };
-                                         
-                                         string del = PostGet.Postread("user/delete", JObject.Parse(JsonConvert.SerializeObject(adios)));
+                                     case 7: //DELETE
+                                         string del = PostGet.Getread("user/delete/" + username);
                                          break;
-                                     case 8:
+                                     case 8: //TRADE
                                          Console.WriteLine("Trocar: \n");
                                          Console.WriteLine("1- Euro \n" +
                                                            ("2- USD \n") +
                                                            ("3- Libras \n") +
                                                            ("4- Cardano \n"));
-                                         String antiga = Console.ReadLine();
+                                         int antigal = int.Parse(Console.ReadLine());
+                                         int antiga = antigal - 1;
                                          Console.WriteLine("Por: \n");
                                          Console.WriteLine("1- Euro \n" +
                                                            ("2- USD \n") +
                                                            ("3- Libras \n") +
                                                            ("4- Cardano \n"));
-                                         String nova = Console.ReadLine();
+                                         int noval = int.Parse(Console.ReadLine());
+                                         int nova = noval - 1;
                                          Console.WriteLine("Quantidade: \n");
                                          int quant = int.Parse(Console.ReadLine());
                                          
