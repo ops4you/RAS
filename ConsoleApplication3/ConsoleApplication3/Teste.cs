@@ -1,4 +1,5 @@
 using System;
+using System.Configuration;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -9,8 +10,6 @@ namespace ConsoleApplication3
     {
         static void Main(string[] args)
         {
-            double saldo = 0.00;
-            string nome = "Default";
             Console.WriteLine("\nRASBet ---- BEM VINDO ---- RASBet\n" +
                               "-----------------------------------\n" +
                               "| MENU                            |\n" +
@@ -32,20 +31,43 @@ namespace ConsoleApplication3
                     Console.WriteLine("Password: ");
                     string password = Console.ReadLine();
                     //Console.WriteLine("\n");
-                    
+
                     var logi = new
                     {
                         username = username,
                         password = password
                     };
-                    PostGet.Postread("user/login", JObject.Parse(JsonConvert.SerializeObject(logi)));
+                    string logg = PostGet.Postread("user/login", JObject.Parse(JsonConvert.SerializeObject(logi)));
+                    dynamic json = JsonConvert.DeserializeObject(logg);
+
+                    if (json["success"]) Console.WriteLine("Bem Vindo " + username);
+                    else if (json["error"]) Console.WriteLine("Credenciais erradas");
+                    while (json["error"])
+                    {
+                        Console.WriteLine("Username: ");
+                        username = Console.ReadLine();
+                        //Console.WriteLine("\n");
+
+                        Console.WriteLine("Password: ");
+                        password = Console.ReadLine();
+                        //Console.WriteLine("\n");
+
+                        logi = new
+                        {
+                            username = username,
+                            password = password
+                        };
+                        logg = PostGet.Postread("user/login", JObject.Parse(JsonConvert.SerializeObject(logi)));
+                        json = JsonConvert.DeserializeObject(logg);
+                    }
+
                     break;
                 case 2:
                     Console.WriteLine("\n RASBet ---- SIGN UP ---- RASBet");
                     //Console.WriteLine("\n");
 
                     Console.WriteLine("Nome: ");
-                    nome = Console.ReadLine();
+                    string nome = Console.ReadLine();
                     //Console.WriteLine("\n");
 
                     Console.WriteLine("Username: ");
@@ -63,7 +85,7 @@ namespace ConsoleApplication3
                     Console.WriteLine("Repeat Password: ");
                     string repPassword = Console.ReadLine();
                     //Console.WriteLine("\n");
-                    while (repPassword!=newpassword)
+                    while (repPassword != newpassword)
                     {
                         Console.WriteLine("\n !! PASSWORDS NÃO SÃO IGUAIS !!\n");
                         Console.WriteLine("Password: ");
@@ -72,14 +94,15 @@ namespace ConsoleApplication3
                         Console.WriteLine("Repeat Password: ");
                         repPassword = Console.ReadLine();
                     }
+
                     Console.WriteLine("Nif: ");
                     int nif = int.Parse(Console.ReadLine());
                     //Console.WriteLine("\n");
 
                     Console.WriteLine("Data Nascimento (dd/mm/aaaa): ");
                     DateTime userDateTime;
-                    
-                    while (!DateTime.TryParse(Console.ReadLine(), out userDateTime) || userDateTime>DateTime.Now)
+
+                    while (!DateTime.TryParse(Console.ReadLine(), out userDateTime) || userDateTime > DateTime.Now)
                     {
                         Console.WriteLine("Data errada.");
                         Console.WriteLine("REPETE");
@@ -98,8 +121,9 @@ namespace ConsoleApplication3
                         Console.WriteLine("Não possui idade legal para jogar");
                         Environment.Exit(0);
                     }
+
                     userDateTime = userDateTime.Date;
-                    
+
                     Console.WriteLine("Admin (s/n): ");
                     int fin = 0;
                     String admin = Console.ReadLine();
@@ -115,8 +139,9 @@ namespace ConsoleApplication3
                             i++;
                             key = Console.ReadLine();
                         }
+
                         if (key == "RAS2122") fin = 1;
-                        
+
                         if (key != "RAS2122")
                         {
                             Console.WriteLine("Continuar SignUp sem ser admin? (s/n):");
@@ -159,98 +184,132 @@ namespace ConsoleApplication3
                     // Console.WriteLine((string)jsonObject["Nif"]);
                     // Console.WriteLine((string)jsonObject["DataNasc"]);
 
-                    Console.WriteLine("\nBem-Vindo "+nome);
+                    Console.WriteLine("\nBem-Vindo " + nome);
                     Console.WriteLine("Aposte com consciência.");
-                    
-                    ///////////////////////////////////////////////////////////////////////////////////////////////
-                    
-                    //get a partir do username
-                    //PostGet.Getread("user/wallet/"+user);             
-
-                    Console.WriteLine("\n \n");
-                    //Menu principal after Log IN
-                    Console.WriteLine("\nRASBet ---- BEM VINDO ---- RASBet\n" +
-                                      ("- \n") +
-                                      ("Bem-Vindo " + nome + "\n") +
-                                      ("Saldo: " + saldo + "€ \n") + //colocar para diferentes moedas no prt
-                                      ("- \n") +
-                                      "-----------------------------------\n" +
-                                      "| MENU                            |\n" +
-                                      "|                                 |\n" +
-                                      "|1. Desportos                     |\n" +
-                                      "|2. Apostas Abertas               |\n" +
-                                      "|3. Histórico de Apostas          |\n" +
-                                      "|4. Depositar                     |\n" +
-                                      "|5. Levantar                      |\n" +
-                                      "|6. Log Out                       |\n" +
-                                      "|7. Apagar Conta                  |\n" +
-                                      "|8. Converter moedas              |\n" +
-                                      "-----------------------------------");
-                    Console.WriteLine("Choose menu item: ");
-                    int escolha1 = int.Parse(Console.ReadLine());
-                    switch (escolha1)
-                    {
-                        case 1:
-                            //todo LISTAR DESPORTOS
-                            PostGet.Getread("user/sports");             
-                            break; 
-                        case 2:
-                            //todo LISTAR APOSTAS ABERTAS
-                            //foreach(aposta n)
-                            //jogo nr: 
-                            //equipa1 1 : (odds)
-                            //equipa2 2 : (odds)
-                            //empate x : (odds)
-                            PostGet.Getread("user/bets");
-                            break; 
-                        case 3:
-                            //todo LISTAR HISTÓRICO DE APOSTAS
-                            //foreach(aposta n)
-                            //jogo nr: 
-                            //equipa1 1
-                            //equipa2 2
-                            //empate x
-                            //Aposta:
-                            //Valor apostado:
-                            //Odd:
-                            //-> (ganhos ou LOST)
-                            PostGet.Getread("user/bethistory");
-                            break; 
-                        case 4: //DEPOSIT
-                            Console.WriteLine("Quantidade a depositar:");
-                            int deposit= int.Parse(Console.ReadLine()); //usar metodo add saldo
-                            break; 
-                        case 5:
-                            Console.WriteLine("Quantidade a levantar:");
-                            int levantar= int.Parse(Console.ReadLine()); //usar metodo remove saldo ou add saldo com saldo negativo
-                            break; 
-                        case 6:
-                            Console.WriteLine("Esperamos vê-lo em breve!");
-                            Environment.Exit(0);
-                            break; 
-                        case 7:
-                            //todo apagar conta
-                            PostGet.Getread("user/delete");
-                            break;
-                        case 8:
-                            Console.WriteLine("Trocar: \n");
-                            Console.WriteLine ("1- Helium \n" +
-                                              ("2- Bitcoin \n") +
-                                              ("3- Ethereum \n") +
-                                              ("4- USD \n") + 
-                                              ("5- Euro \n") + 
-                                               "6- Libra \n");
-                            Console.WriteLine("Por: \n");
-                            Console.WriteLine  ("1- Helium \n" +
-                                               ("2- Bitcoin \n") +
-                                               ("3- Ethereum \n") +
-                                               ("4- USD \n") + 
-                                               ("5- Euro \n") + 
-                                                "6- Libra \n");
-                            break;
-                    }
+                    afterlogin(newusername);
                     break;
-             }
+            }
         }
+        static void afterlogin(string username)
+                             {
+                                 double saldo = 0.00;
+                                 string nome = "Default";
+                                 
+                                 //get a partir do username
+                                 //PostGet.Getread("user/wallet/"+user);             
+         
+                                 Console.WriteLine("\n \n");
+                                 //Menu principal after Log IN
+                                 Console.WriteLine("\nRASBet ---- BEM VINDO ---- RASBet\n" +
+                                                   ("- \n") +
+                                                   ("Bem-Vindo " + username + "\n") +
+                                                   ("Saldo: " + saldo + "€ \n") + //colocar para diferentes moedas no prt
+                                                   ("- \n") +
+                                                   "-----------------------------------\n" +
+                                                   "| MENU                            |\n" +
+                                                   "|                                 |\n" +
+                                                   "|1. Desportos                     |\n" +
+                                                   "|2. Apostas Abertas               |\n" +
+                                                   "|3. Histórico de Apostas          |\n" +
+                                                   "|4. Depositar                     |\n" +
+                                                   "|5. Levantar                      |\n" +
+                                                   "|6. Log Out                       |\n" +
+                                                   "|7. Apagar Conta                  |\n" +
+                                                   "|8. Converter moedas              |\n" +
+                                                   "-----------------------------------");
+                                 Console.WriteLine("Choose menu item: ");
+                                 int escolha1 = int.Parse(Console.ReadLine());
+                                 switch (escolha1)
+                                 {
+                                     case 1:
+                                         //todo LISTAR DESPORTOS
+                                         string desp = PostGet.Getread("user/sports");
+                                         dynamic json = JsonConvert.DeserializeObject(desp);
+                                         break;
+                                     case 2:
+                                         //todo LISTAR APOSTAS ABERTAS
+                                         //foreach(aposta n)
+                                         //jogo nr: 
+                                         //equipa1 1 : (odds)
+                                         //equipa2 2 : (odds)
+                                         //empate x : (odds)
+                                         string bets = PostGet.Getread("bet/bets");
+                                         dynamic json1 = JsonConvert.DeserializeObject(bets);
+                                         break;
+                                     case 3:
+                                         //todo LISTAR HISTÓRICO DE APOSTAS
+                                         //foreach(aposta n)
+                                         //jogo nr: 
+                                         //equipa1 1
+                                         //equipa2 2
+                                         //empate x
+                                         //Aposta:
+                                         //Valor apostado:
+                                         //Odd:
+                                         //-> (ganhos ou LOST)
+                                         string bethistory = PostGet.Getread("user/bethistory");
+                                         dynamic json2 = JsonConvert.DeserializeObject(bethistory);
+
+                                         break;
+                                     case 4: //DEPOSIT
+                                         Console.WriteLine("Selecione moeda:");
+                                         Console.WriteLine("1- Euro \n" +
+                                                           ("2- USD \n") +
+                                                           ("3- Libras \n") +
+                                                           ("4- Cardano \n"));
+                                         int moeda = int.Parse(Console.ReadLine()); 
+                                         Console.WriteLine("Quantidade a depositar:");
+                                         int deposit = int.Parse(Console.ReadLine()); 
+                                         break;
+                                     case 5:
+                                         Console.WriteLine("Selecione moeda:");
+                                         Console.WriteLine("1- Euro \n" +
+                                                           ("2- USD \n") +
+                                                           ("3- Libras \n") +
+                                                           ("4- Cardano \n"));
+                                         int moedita = int.Parse(Console.ReadLine());
+                                         Console.WriteLine("Quantidade a levantar:");
+                                         int levantar = int.Parse(Console.ReadLine()); 
+                                         break;
+                                     case 6:
+                                         Console.WriteLine("Esperamos vê-lo em breve!");
+                                         Environment.Exit(0);
+                                         break;
+                                     case 7:
+                                         //todo apagar conta
+                                         var adios = new
+                                         {
+                                             username = username
+                                         };
+                                         
+                                         string del = PostGet.Postread("user/delete", JObject.Parse(JsonConvert.SerializeObject(adios)));
+                                         break;
+                                     case 8:
+                                         Console.WriteLine("Trocar: \n");
+                                         Console.WriteLine("1- Euro \n" +
+                                                           ("2- USD \n") +
+                                                           ("3- Libras \n") +
+                                                           ("4- Cardano \n"));
+                                         String antiga = Console.ReadLine();
+                                         Console.WriteLine("Por: \n");
+                                         Console.WriteLine("1- Euro \n" +
+                                                           ("2- USD \n") +
+                                                           ("3- Libras \n") +
+                                                           ("4- Cardano \n"));
+                                         String nova = Console.ReadLine();
+                                         Console.WriteLine("Quantidade: \n");
+                                         int quant = int.Parse(Console.ReadLine());
+                                         
+                                         var troca = new
+                                         {
+                                             old = antiga,
+                                             newe = nova,
+                                             amount = quant
+                                         };
+                                         
+                                         string tro = PostGet.Postread("user/trade", JObject.Parse(JsonConvert.SerializeObject(troca)));
+                                         break;
+                                 }
+                             }
     }
 }

@@ -11,8 +11,9 @@ namespace ConsoleApplication3
 {
     public class PostGet
     {
-        public static void Postread(string url, object json)
+        public static string Postread(string url, object json)
         {
+            string responseText = "";
             try
             {
                 string basic="http://127.0.0.1:5000/"; //url onde ir buscar
@@ -32,9 +33,8 @@ namespace ConsoleApplication3
                 var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
-                    var responseText = streamReader.ReadToEnd();
+                    responseText = streamReader.ReadToEnd();
                     Console.WriteLine(responseText);
-
                     //Now you have your response.
                     //or false depending on information in the response     
                 }
@@ -43,9 +43,11 @@ namespace ConsoleApplication3
             {
                 Console.WriteLine(ex.Message);
             }
+            return responseText;
         }
-        public static void Getread(string url)
+        public static string Getread(string url)
         {
+            string responseText = "";
             try
             {
                 string basic="http://127.0.0.1:5000/"; //url onde ir buscar
@@ -58,7 +60,7 @@ namespace ConsoleApplication3
                 var httpResponse = (HttpWebResponse)httpWebRequest.GetResponse();
                 using (var streamReader = new StreamReader(httpResponse.GetResponseStream()))
                 {
-                    var responseText = streamReader.ReadToEnd();
+                    responseText = streamReader.ReadToEnd();
                     Console.WriteLine(responseText);
 
                     //Now you have your response.
@@ -69,6 +71,7 @@ namespace ConsoleApplication3
             {
                 Console.WriteLine(ex.Message);
             }
+            return responseText;
         }
 
     }
